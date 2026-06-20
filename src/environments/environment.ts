@@ -1,6 +1,7 @@
 import { getRuntimeEnvironment } from './environment.override';
 
-const runtime = getRuntimeEnvironment();
+// `runtime` pode vir vazio em ambientes locais; tratar como `any` para mesclar configurações opcionais
+const runtime: any = getRuntimeEnvironment();
 
 export const environment = {
   production: false,
