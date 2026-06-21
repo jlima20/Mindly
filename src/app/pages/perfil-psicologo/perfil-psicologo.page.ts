@@ -6,202 +6,808 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { AuthService } from 'src/app/services/auth.service';
 import { AgendamentoService } from 'src/app/services/agendamento.service';
 import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'app-perfil-psicologo',
   templateUrl: './perfil-psicologo.page.html',
   styleUrls: ['./perfil-psicologo.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLink]
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule,
+    RouterLink
+  ]
 })
 export class PerfilPsicologoPage implements OnInit {
 
-  user: any;
-  pacientes: any[] = [];
-  mostrarPacientes: boolean = false;
-  mostrarSenha: boolean = false;
-  editMode: boolean = false;
-  showDatepicker: boolean = false;
-  currentSenha: string = '';
-  novaSenha: string = '';
-  confirmarSenha: string = '';
-  senhaMessage: string = '';
-  profileMessage: string = '';
-  newPhotoTemp: string | null = null;
+
+  user:any = {};
+
+  pacientes:any[] = [];
+
+  mostrarPacientes = false;
+
+  editMode = false;
+
+  showDatepicker = false;
+
+
+  proximosAgendamentos:any[] = [];
+
+
+
+  newPhotoTemp:string|null = null;
+
+
+
+  isLoadingProfile = false;
+
+
+  profileMessage = '';
+
+
+
+  showPasswordForm = false;
+
+
+  currentPassword = '';
+
+  newPassword = '';
+
+  confirmPassword = '';
+
+  isLoadingPassword = false;
+
+  passwordMessage = '';
+
+
+
+
 
   constructor(
-    private auth: AuthService,
-    private agendamentoService: AgendamentoService,
-    private router: Router,
-    private toastCtrl: ToastController
-  ) {}
 
-  ngOnInit() {
+    private auth:AuthService,
+
+    private agendamentoService:AgendamentoService,
+
+    private router:Router,
+
+    private toastCtrl:ToastController
+
+  ){}
+
+
+
+
+
+  ngOnInit(){
+
     this.carregarUsuario();
+
   }
 
-  carregarUsuario() {
-    const currentUser = this.auth.getCurrentUser();
-    if (!currentUser || !currentUser.email) {
+
+
+
+
+
+  carregarUsuario(){
+
+
+    const currentUser =
+    this.auth.getCurrentUser();
+
+
+
+    if(!currentUser?.email){
+
       this.router.navigate(['/login']);
+
       return;
+
     }
 
-    this.auth.getUserByEmail(currentUser.email).subscribe(user => {
-      if (user) {
-        this.user = { ...currentUser, ...user };
-      } else {
-        this.user = currentUser;
+
+
+
+    this.auth.getUserByEmail(
+      currentUser.email
+    )
+    .subscribe(user=>{
+
+
+      if(user){
+
+        this.user={
+          ...currentUser,
+          ...user
+        };
+
+
+        this.carregarAgendamentos();
+
       }
+
+
     });
+
+
+
   }
 
-  async tirarFoto() {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 80,
-        allowEditing: false,
-        resultType: CameraResultType.DataUrl,
-        source: CameraSource.Camera
+
+
+
+
+
+
+
+  async carregarAgendamentos(){
+
+
+    if(!this.user.email){
+
+      return;
+
+    }
+
+
+
+
+    this.agendamentoService
+    .getProximosAgendamentos(
+      this.user.email,
+      'psicologo'
+    )
+    .subscribe(async agendamentos=>{
+
+
+      const lista:any[]=[];
+
+
+
+      for(const agendamento of agendamentos){
+
+
+
+        const paciente =
+        await firstValueFrom(
+
+          this.auth.getUserByEmail(
+            agendamento.pacienteEmail
+          )
+
+        );
+
+
+
+        lista.push({
+
+          ...agendamento,
+
+
+          pacienteNome:
+
+          paciente ?
+
+          `${paciente.nome} ${paciente.sobrenome}`
+
+          :
+
+          'Paciente',
+
+
+          pacienteFoto:
+
+          paciente?.foto ||
+
+          'assets/avatar.png'
+
+
+        });
+
+
+
+      }
+
+
+
+      this.proximosAgendamentos =
+      lista;
+
+
+
+    });
+
+
+  }
+
+
+
+
+
+
+
+
+
+  async salvarPerfil(){
+
+
+    this.isLoadingProfile=true;
+
+
+
+    try{
+
+
+      await this.auth.updateUser(
+        this.user
+      );
+
+
+      this.profileMessage =
+      'Perfil atualizado com sucesso.';
+
+
+
+      this.editMode=false;
+
+
+
+      await this.showToast(
+        this.profileMessage
+      );
+
+
+
+    }catch(error){
+
+
+      console.error(error);
+
+
+      this.profileMessage =
+      'Erro ao atualizar perfil.';
+
+
+
+    }
+    finally{
+
+      this.isLoadingProfile=false;
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+  async atualizarPerfil(){
+
+    this.salvarPerfil();
+
+  }
+
+
+
+
+
+
+
+
+  async capturePhoto(){
+
+
+    this.tirarFoto();
+
+
+  }
+
+
+
+
+
+
+
+
+  async tirarFoto(){
+
+
+    try{
+
+
+      const image =
+      await Camera.getPhoto({
+
+
+        quality:80,
+
+
+        allowEditing:false,
+
+
+        resultType:
+        CameraResultType.DataUrl,
+
+
+        source:
+        CameraSource.Camera
+
+
       });
 
-      this.newPhotoTemp = image.dataUrl || '';
-    } catch (error) {
-      console.error('Erro ao tirar foto:', error);
-      this.profileMessage = 'Não foi possível salvar a foto.';
+
+
+      this.newPhotoTemp =
+      image.dataUrl || '';
+
+
+
     }
+    catch(error){
+
+      console.error(error);
+
+    }
+
+
   }
 
-  async pickPhotoFromGallery() {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 80,
-        allowEditing: false,
-        resultType: CameraResultType.DataUrl,
-        source: CameraSource.Photos
+
+
+
+
+
+
+
+  async pickPhotoFromGallery(){
+
+
+    try{
+
+
+      const image =
+      await Camera.getPhoto({
+
+
+        quality:80,
+
+        allowEditing:false,
+
+
+        resultType:
+        CameraResultType.DataUrl,
+
+
+        source:
+        CameraSource.Photos
+
+
       });
-      this.newPhotoTemp = image.dataUrl || '';
-    } catch (error) {
-      console.error('Erro ao selecionar foto:', error);
-      this.profileMessage = 'Não foi possível selecionar a foto.';
+
+
+
+      this.newPhotoTemp =
+      image.dataUrl || '';
+
+
+
     }
-  }
+    catch(error){
 
-  async confirmarFoto() {
-    if (!this.newPhotoTemp) return;
-    this.user.foto = this.newPhotoTemp;
-    try {
-      await this.auth.updateUser(this.user);
-      this.profileMessage = 'Foto atualizada com sucesso.';
-      this.newPhotoTemp = null;
-      await this.showToast(this.profileMessage);
-    } catch (error) {
-      console.error('Erro ao salvar foto:', error);
-      this.profileMessage = 'Não foi possível salvar a foto.';
+      console.error(error);
+
     }
+
+
   }
 
-  cancelarNovaFoto() {
-    this.newPhotoTemp = null;
-  }
 
-  async onFotoSelecionada(event: any) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.newPhotoTemp = reader.result as string;
+
+
+
+
+
+
+  async onFotoSelecionada(event:any){
+
+
+    const file =
+    event.target.files?.[0];
+
+
+    if(!file){
+
+      return;
+
+    }
+
+
+
+    const reader =
+    new FileReader();
+
+
+
+    reader.onload=()=>{
+
+
+      this.newPhotoTemp =
+      reader.result as string;
+
+
     };
+
+
+
     reader.readAsDataURL(file);
+
+
   }
 
-  toggleSenhaForm() {
-    this.mostrarSenha = !this.mostrarSenha;
-  }
 
-  toggleEditMode() {
-    this.editMode = !this.editMode;
-    if (!this.editMode) {
-      this.showDatepicker = false;
-    }
-  }
 
-  async atualizarPerfil() {
-    try {
-      await this.auth.updateUser(this.user);
-      this.profileMessage = 'Perfil atualizado com sucesso.';
-      this.editMode = false;
-      this.showDatepicker = false;
-      await this.showToast(this.profileMessage);
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      this.profileMessage = 'Não foi possível atualizar o perfil.';
-    }
-  }
 
-  async alterarSenha() {
-    if (!this.currentSenha || !this.novaSenha || !this.confirmarSenha) {
-      this.senhaMessage = 'Preencha todos os campos.';
+
+
+
+
+  async confirmarFoto(){
+
+
+    if(!this.newPhotoTemp){
+
       return;
+
     }
 
-    if (this.novaSenha !== this.confirmarSenha) {
-      this.senhaMessage = 'As senhas não coincidem.';
+
+
+    this.user.foto =
+    this.newPhotoTemp;
+
+
+
+    await this.salvarPerfil();
+
+
+
+    this.newPhotoTemp=null;
+
+
+
+  }
+
+
+
+
+
+
+
+  cancelarNovaFoto(){
+
+    this.newPhotoTemp=null;
+
+  }
+
+
+
+
+
+
+
+  toggleEditMode(){
+
+    this.editMode =
+    !this.editMode;
+
+
+  }
+
+
+
+
+
+
+
+
+
+  verPsicologos(){
+
+    this.router.navigate([
+      '/lista-psicologos'
+    ]);
+
+  }
+
+
+
+
+
+
+  verAgendamentos(){
+
+    this.router.navigate([
+      '/agenda-psicologo'
+    ]);
+
+  }
+
+
+
+
+
+
+
+
+  carregarPacientes(){
+
+
+    if(this.mostrarPacientes){
+
+      this.mostrarPacientes=false;
+
       return;
+
     }
 
-    try {
-      const success = await this.auth.changePassword(this.user.email, this.currentSenha, this.novaSenha);
-      if (success) {
-        this.senhaMessage = 'Senha atualizada com sucesso.';
-        this.currentSenha = '';
-        this.novaSenha = '';
-        this.confirmarSenha = '';
-      } else {
-        this.senhaMessage = 'Senha atual incorreta.';
+
+
+    this.agendamentoService
+    .getAgendamentosPorUsuario(
+      this.user.email,
+      'psicologo'
+    )
+    .subscribe(agendamentos=>{
+
+
+      const emails =
+      [
+        ...new Set(
+          agendamentos.map(
+            a=>a.pacienteEmail
+          )
+        )
+      ];
+
+
+
+      if(emails.length){
+
+
+        this.auth.getUsersByEmails(
+          emails
+        )
+        .subscribe(users=>{
+
+
+          this.pacientes =
+          users;
+
+
+          this.mostrarPacientes=true;
+
+
+        });
+
+
       }
-    } catch (error) {
-      console.error('Erro ao alterar senha:', error);
-      this.senhaMessage = 'Erro ao alterar senha. Tente novamente.';
-    }
-  }
 
-  async showToast(message: string) {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 2500,
-      position: 'bottom'
+
     });
-    toast.present();
+
+
   }
 
-  carregarPacientes() {
-    if (this.mostrarPacientes) {
-      this.mostrarPacientes = false;
+
+
+
+
+
+
+
+  togglePasswordForm(){
+
+    this.showPasswordForm =
+    !this.showPasswordForm;
+
+
+  }
+
+
+
+
+
+
+
+
+
+ async alterarSenha(){
+
+
+    this.isLoadingPassword=true;
+
+
+
+    if(this.newPassword !== this.confirmPassword){
+
+
+      this.passwordMessage =
+      'As senhas não coincidem.';
+
+
+      this.isLoadingPassword=false;
+
       return;
+
     }
 
-    if (!this.user?.email) {
-      return;
-    }
 
-    this.agendamentoService.getAgendamentosPorUsuario(this.user.email, 'psicologo').subscribe(agendamentos => {
-      const emails = [...new Set(agendamentos.map(ag => ag.pacienteEmail))];
-      if (emails.length === 0) {
-        this.pacientes = [];
-        this.mostrarPacientes = true;
-        return;
+
+
+    try{
+
+
+      const sucesso =
+      await this.auth.changePassword(
+
+        this.user.email,
+
+        this.currentPassword,
+
+        this.newPassword
+
+      );
+
+
+
+      if(sucesso){
+
+
+        this.passwordMessage =
+        'Senha alterada com sucesso.';
+
+
+
+        this.currentPassword='';
+
+        this.newPassword='';
+
+        this.confirmPassword='';
+
+
+      }
+      else{
+
+
+        this.passwordMessage =
+        'Senha atual incorreta.';
+
+
       }
 
-      this.auth.getUsersByEmails(emails).subscribe(users => {
-        this.pacientes = users;
-        this.mostrarPacientes = true;
-      });
-    });
+
+
+    }
+    finally{
+
+
+      this.isLoadingPassword=false;
+
+
+    }
+
+
   }
 
-  logout() {
+
+
+
+
+
+
+  abrirWhatsapp(numero:string){
+
+
+    if(!numero){
+
+      return;
+
+    }
+
+
+    window.open(
+
+      `https://wa.me/${numero.replace(/\D/g,'')}`,
+
+      '_blank'
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+  abrirInstagram(usuario:string){
+
+
+    if(!usuario){
+
+      return;
+
+    }
+
+
+    window.open(
+
+      `https://instagram.com/${usuario.replace('@','')}`,
+
+      '_blank'
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+
+
+  logout(){
+
     this.auth.logout();
+
     this.router.navigate(['/login']);
+
   }
+
+
+
+
+
+
+
+
+
+  async showToast(message:string){
+
+
+    const toast =
+    await this.toastCtrl.create({
+
+      message,
+
+      duration:2500,
+
+      position:'bottom'
+
+    });
+
+
+
+    toast.present();
+
+
+  }
+
+
+
 }

@@ -3,154 +3,708 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
+
     <ion-title>Perfil do Paciente</ion-title>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content class="ion-padding">
+
+
   <ion-card class="perfil-card">
+
     <div class="topo">
+
       <div class="avatar">
-        <img *ngIf="user.foto" [src]="user.foto" alt="Foto do paciente" />
-        <div *ngIf="!user.foto" class="avatar-placeholder">Sem foto</div>
+
+        <img 
+          *ngIf="user.foto" 
+          [src]="user.foto" 
+          alt="Foto do paciente" />
+
+        <div 
+          *ngIf="!user.foto" 
+          class="avatar-placeholder">
+
+          Sem foto
+
+        </div>
+
       </div>
-      <h2>{{ user.nome }} {{ user.sobrenome }}</h2>
-      <p class="subtitle">Paciente</p>
+
+
+      <h2>
+        {{ user.nome }} {{ user.sobrenome }}
+      </h2>
+
+
+      <p class="subtitle">
+        Paciente
+      </p>
+
     </div>
+
+
 
     <div class="info">
-      <p><strong>E-mail</strong><span>{{ user.email }}</span></p>
-      <p *ngIf="user.telefone"><strong>Telefone</strong><span>{{ user.telefone }}</span></p>
-      <p *ngIf="user.cpf"><strong>CPF</strong><span>{{ user.cpf }}</span></p>
-      <p *ngIf="user.endereco"><strong>Endereço</strong><span>{{ user.endereco }}</span></p>
-      <p *ngIf="user.dataNascimento"><strong>Data de nascimento</strong><span>{{ user.dataNascimento }}</span></p>
+
+      <p>
+        <strong>E-mail</strong>
+        <span>{{ user.email }}</span>
+      </p>
+
+
+      <p *ngIf="user.telefone">
+        <strong>Telefone</strong>
+        <span>{{ user.telefone }}</span>
+      </p>
+
+
+      <p *ngIf="user.cpf">
+        <strong>CPF</strong>
+        <span>{{ user.cpf }}</span>
+      </p>
+
+
+      <p *ngIf="user.endereco">
+        <strong>Endereço</strong>
+        <span>{{ user.endereco }}</span>
+      </p>
+
+
+      <p *ngIf="user.dataNascimento">
+        <strong>Data de nascimento</strong>
+        <span>{{ user.dataNascimento }}</span>
+      </p>
+
+
     </div>
 
-    <div class="foto-actions" *ngIf="editMode">
-      <ion-button size="small" expand="block" fill="outline" (click)="capturePhoto()">Tirar foto</ion-button>
-      <ion-button size="small" expand="block" fill="outline" (click)="pickPhotoFromGallery()">Escolher da galeria</ion-button>
-      <input type="file" accept="image/*" (change)="onFotoSelecionada($event)" />
-      <div *ngIf="newPhotoTemp" class="preview">
-        <img [src]="newPhotoTemp" alt="Preview" />
-        <ion-button size="small" expand="block" (click)="confirmarFoto()">Confirmar</ion-button>
-        <ion-button size="small" expand="block" fill="clear" (click)="cancelarNovaFoto()">Cancelar</ion-button>
-      </div>
-    </div>
-    <div class="perfil-actions">
-      <ion-button size="small" expand="full" fill="outline" (click)="toggleEditMode()">
-        {{ editMode ? 'Fechar edição' : 'Editar perfil' }}
+
+
+    <div 
+      class="foto-actions" 
+      *ngIf="editMode">
+
+
+      <ion-button 
+        size="small" 
+        expand="block" 
+        fill="outline"
+        (click)="capturePhoto()">
+
+        Tirar foto
+
       </ion-button>
+
+
+
+      <ion-button 
+        size="small" 
+        expand="block" 
+        fill="outline"
+        (click)="pickPhotoFromGallery()">
+
+        Escolher da galeria
+
+      </ion-button>
+
+
+
+      <input 
+        type="file" 
+        accept="image/*"
+        (change)="onFotoSelecionada($event)" />
+
+
+
+      <div 
+        *ngIf="newPhotoTemp" 
+        class="preview">
+
+
+        <img 
+          [src]="newPhotoTemp" 
+          alt="Preview" />
+
+
+
+        <ion-button
+          size="small"
+          expand="block"
+          (click)="confirmarFoto()">
+
+          Confirmar
+
+        </ion-button>
+
+
+
+        <ion-button
+          size="small"
+          expand="block"
+          fill="clear"
+          (click)="cancelarNovaFoto()">
+
+          Cancelar
+
+        </ion-button>
+
+
+      </div>
+
+
     </div>
+
+
+
+    <div class="perfil-actions">
+
+      <ion-button 
+        size="small"
+        expand="full"
+        fill="outline"
+        (click)="toggleEditMode()">
+
+        {{ editMode ? 'Fechar edição' : 'Editar perfil' }}
+
+      </ion-button>
+
+
+    </div>
+
+
   </ion-card>
+
+
+
+
 
   <ng-container *ngIf="editMode">
+
+
     <ion-card>
+
+
       <ion-card-header>
-        <ion-card-title>Editar informações</ion-card-title>
+
+        <ion-card-title>
+          Editar informações
+        </ion-card-title>
+
       </ion-card-header>
+
+
+
       <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Nome</ion-label>
-        <ion-input [(ngModel)]="user.nome" placeholder="Nome"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Sobrenome</ion-label>
-        <ion-input [(ngModel)]="user.sobrenome" placeholder="Sobrenome"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Telefone</ion-label>
-        <ion-input [(ngModel)]="user.telefone" placeholder="Telefone"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">CEP</ion-label>
-        <ion-input [(ngModel)]="user.cep" placeholder="CEP"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Endereço</ion-label>
-        <ion-input [(ngModel)]="user.endereco" placeholder="Endereço"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Complemento</ion-label>
-        <ion-input [(ngModel)]="user.complemento" placeholder="Complemento"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Data de nascimento</ion-label>
-        <ion-button fill="outline" size="small" (click)="showDatepicker = !showDatepicker">
-          {{ showDatepicker ? 'Ocultar calendário' : 'Editar data' }}
-        </ion-button>
-      </ion-item>
-      <ion-item *ngIf="showDatepicker">
-        <ion-datetime display-format="DD/MM/YYYY" picker-format="DD/MM/YYYY" [(ngModel)]="user.dataNascimentoIso"></ion-datetime>
-      </ion-item>
-        <ion-button expand="full" [disabled]="isLoadingProfile" (click)="salvarPerfil()">
-          {{ isLoadingProfile ? 'Salvando...' : 'Salvar perfil' }}
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
 
-  <ion-card class="action-card">
-    <ion-card-header>
-      <ion-card-title>Ações</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-button expand="full" fill="solid" (click)="verPsicologos()">
-        Buscar psicólogos
-      </ion-button>
-      <ion-button expand="full" fill="outline" color="secondary" (click)="verAgendamentos()">
-        Meus agendamentos
-      </ion-button>
-      <ion-button expand="full" color="medium" (click)="logout()">
-        Sair
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Próximos agendamentos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="proximosAgendamentos?.length; else semAgendamentos">
-        <ion-item *ngFor="let agendamento of proximosAgendamentos">
-          <ion-label>
-            <h2>{{ agendamento.psicologoEmail }}</h2>
-            <p>Data: {{ agendamento.dataHora | date:'dd/MM/yyyy' }} às {{ agendamento.dataHora | date:'HH:mm' }}</p>
-            <p>Status: {{ agendamento.status }}</p>
+        <ion-item>
+
+          <ion-label position="stacked">
+            Nome
           </ion-label>
+
+          <ion-input 
+            [(ngModel)]="user.nome"
+            placeholder="Nome">
+          </ion-input>
+
         </ion-item>
-      </ion-list>
-      <ng-template #semAgendamentos>
-        <p>Você não possui agendamentos futuros.</p>
-      </ng-template>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Sobrenome
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="user.sobrenome"
+            placeholder="Sobrenome">
+          </ion-input>
+
+        </ion-item>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Telefone
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="user.telefone"
+            placeholder="Telefone">
+          </ion-input>
+
+        </ion-item>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            CEP
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="user.cep"
+            placeholder="CEP">
+          </ion-input>
+
+        </ion-item>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Endereço
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="user.endereco"
+            placeholder="Endereço">
+          </ion-input>
+
+        </ion-item>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Complemento
+          </ion-label>
+
+          <ion-input
+            [(ngModel)]="user.complemento"
+            placeholder="Complemento">
+          </ion-input>
+
+        </ion-item>
+
+
+
+        <ion-item>
+
+          <ion-label position="stacked">
+            Data de nascimento
+          </ion-label>
+
+
+          <ion-button
+            fill="outline"
+            size="small"
+            (click)="showDatepicker = !showDatepicker">
+
+            {{ showDatepicker ? 'Ocultar calendário' : 'Editar data' }}
+
+          </ion-button>
+
+
+        </ion-item>
+
+
+
+        <ion-item *ngIf="showDatepicker">
+
+          <ion-datetime
+            display-format="DD/MM/YYYY"
+            picker-format="DD/MM/YYYY"
+            [(ngModel)]="user.dataNascimentoIso">
+          </ion-datetime>
+
+
+        </ion-item>
+
+
+
+        <ion-button
+          expand="full"
+          [disabled]="isLoadingProfile"
+          (click)="salvarPerfil()">
+
+
+          {{ isLoadingProfile ? 'Salvando...' : 'Salvar perfil' }}
+
+
+        </ion-button>
+
+
+      </ion-card-content>
+
+
+    </ion-card>
+
+
+  </ng-container>
+  
+    <ion-card class="action-card">
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Ações
+      </ion-card-title>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+
+      <ion-button
+        expand="full"
+        fill="solid"
+        (click)="verPsicologos()">
+
+
+        <ion-icon
+          name="search-outline"
+          slot="start">
+        </ion-icon>
+
+
+        Buscar psicólogos
+
+
+      </ion-button>
+
+
+
+      <ion-button
+        expand="full"
+        fill="outline"
+        color="secondary"
+        (click)="verAgendamentos()">
+
+
+
+        <ion-icon
+          name="time-outline"
+          slot="start">
+        </ion-icon>
+
+
+        Meus agendamentos
+
+
+      </ion-button>
+
+
+
+      <ion-button
+        expand="full"
+        color="medium"
+        (click)="logout()">
+
+
+
+        <ion-icon
+          name="log-out-outline"
+          slot="start">
+        </ion-icon>
+
+
+        Sair
+
+
+      </ion-button>
+
+
     </ion-card-content>
+
+
   </ion-card>
 
-  <ion-button size="small" expand="full" fill="outline" (click)="togglePasswordForm()">
-    {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
+
+
+
+
+  <!-- PRÓXIMOS AGENDAMENTOS -->
+
+<ion-card>
+
+  <ion-card-header>
+
+    <ion-card-title>
+      Próximos agendamentos
+    </ion-card-title>
+
+  </ion-card-header>
+
+  <ion-card-content>
+
+    <ion-list
+      *ngIf="proximosAgendamentos?.length; else semAgendamentos">
+
+      <ion-item
+        *ngFor="let agendamento of proximosAgendamentos">
+
+        <ion-label>
+
+          <h2>
+            {{ agendamento.psicologoNome }}
+          </h2>
+
+          <p>
+            📅
+            {{ agendamento.dataHora | date:'dd/MM/yyyy' }}
+            às
+            {{ agendamento.dataHora | date:'HH:mm' }}
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+            {{ agendamento.status }}
+          </p>
+
+          <div class="ion-margin-top">
+
+            <ion-button
+              *ngIf="agendamento.whatsapp"
+              size="small"
+              color="success"
+              fill="outline"
+              (click)="abrirWhatsapp(agendamento.whatsapp)">
+
+              <ion-icon
+                name="logo-whatsapp"
+                slot="start">
+              </ion-icon>
+
+              WhatsApp
+
+            </ion-button>
+
+            <ion-button
+              *ngIf="agendamento.instagram"
+              size="small"
+              color="tertiary"
+              fill="outline"
+              (click)="abrirInstagram(agendamento.instagram)">
+
+              <ion-icon
+                name="logo-instagram"
+                slot="start">
+              </ion-icon>
+
+              Instagram
+
+            </ion-button>
+
+          </div>
+
+        </ion-label>
+
+      </ion-item>
+
+    </ion-list>
+
+    <ng-template #semAgendamentos>
+
+      <div class="ion-text-center ion-padding">
+
+        Você não possui agendamentos futuros.
+
+      </div>
+
+    </ng-template>
+
+  </ion-card-content>
+
+</ion-card>
+
+
+
+
+
+
+
+  <!-- ALTERAR SENHA -->
+
+
+  <ion-button
+
+    size="small"
+
+    expand="full"
+
+    fill="outline"
+
+    (click)="togglePasswordForm()">
+
+
+
+    {{ 
+      showPasswordForm 
+      ? 'Ocultar alteração de senha' 
+      : 'Alterar senha'
+    }}
+
+
+
   </ion-button>
 
-  <ion-card class="password-compact" *ngIf="showPasswordForm">
+
+
+
+
+
+  <ion-card
+
+    class="password-compact"
+
+    *ngIf="showPasswordForm">
+
+
+
     <ion-card-content>
+
+
+
       <ion-item>
-        <ion-label position="stacked">Senha atual</ion-label>
-        <ion-input [(ngModel)]="currentPassword" type="password" placeholder="Senha atual"></ion-input>
+
+
+        <ion-label position="stacked">
+
+          Senha atual
+
+        </ion-label>
+
+
+
+        <ion-input
+
+          [(ngModel)]="currentPassword"
+
+          type="password"
+
+          placeholder="Senha atual">
+
+        </ion-input>
+
+
       </ion-item>
+
+
+
+
+
+
       <ion-item>
-        <ion-label position="stacked">Nova senha</ion-label>
-        <ion-input [(ngModel)]="newPassword" type="password" placeholder="Nova senha"></ion-input>
+
+
+        <ion-label position="stacked">
+
+          Nova senha
+
+        </ion-label>
+
+
+
+        <ion-input
+
+          [(ngModel)]="newPassword"
+
+          type="password"
+
+          placeholder="Nova senha">
+
+        </ion-input>
+
+
       </ion-item>
+
+
+
+
+
+
       <ion-item>
-        <ion-label position="stacked">Confirmar nova senha</ion-label>
-        <ion-input [(ngModel)]="confirmPassword" type="password" placeholder="Confirmar nova senha"></ion-input>
+
+
+        <ion-label position="stacked">
+
+          Confirmar nova senha
+
+        </ion-label>
+
+
+
+        <ion-input
+
+          [(ngModel)]="confirmPassword"
+
+          type="password"
+
+          placeholder="Confirmar nova senha">
+
+        </ion-input>
+
+
       </ion-item>
-      <ion-button size="small" expand="full" [disabled]="isLoadingPassword" (click)="alterarSenha()">
-        {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
+
+
+
+
+
+
+      <ion-button
+
+        size="small"
+
+        expand="full"
+
+        [disabled]="isLoadingPassword"
+
+        (click)="alterarSenha()">
+
+
+
+        {{ 
+          isLoadingPassword 
+          ? 'Alterando...' 
+          : 'Alterar senha'
+        }}
+
+
+
       </ion-button>
-      <ion-text color="danger" *ngIf="passwordMessage">
-        <p>{{ passwordMessage }}</p>
+
+
+
+
+
+
+      <ion-text
+
+        color="danger"
+
+        *ngIf="passwordMessage">
+
+
+        <p>
+          {{ passwordMessage }}
+        </p>
+
+
       </ion-text>
+
+
+
+
     </ion-card-content>
+
+
+
   </ion-card>
+
+
 
 </ion-content>

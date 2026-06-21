@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './registro.page.html',
   styleUrls: ['./registro.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule, RouterLink] 
+  imports: [IonicModule, FormsModule, CommonModule, RouterLink]
 })
 export class RegistroPage {
 
@@ -29,7 +29,9 @@ export class RegistroPage {
     endereco: '',
     complemento: '',
     tipoUsuario: 'paciente',
-    foto: ''
+    foto: '',
+    whatsapp: '',
+    instagram: ''
   };
 
   confirmarSenha: string = '';
@@ -43,56 +45,42 @@ export class RegistroPage {
     private http: HttpClient
   ) {}
 
-  // =========================
-  // MÁSCARAS
-  // =========================
-
   private getInputValue(event: any): string {
     return event?.detail?.value ?? event.target?.value ?? '';
   }
 
   formatarCPF(event: any) {
     let valor = this.getInputValue(event).replace(/\D/g, '');
-
     valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
     valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
     valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-
     this.formData.cpf = valor;
   }
 
   formatarData(event: any) {
     let valor = this.getInputValue(event).replace(/\D/g, '');
-
     valor = valor.replace(/(\d{2})(\d)/, '$1/$2');
     valor = valor.replace(/(\d{2})(\d)/, '$1/$2');
-
     this.formData.dataNascimento = valor;
   }
 
   formatarTelefone(event: any) {
     let valor = this.getInputValue(event).replace(/\D/g, '');
-
     valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
     valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
-
     this.formData.telefone = valor;
   }
 
   formatarCEP(event: any) {
     let valor = this.getInputValue(event).replace(/\D/g, '');
-
     valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+
     if (valor.length > 9) {
       valor = valor.slice(0, 9);
     }
 
     this.formData.cep = valor;
   }
-
-  // =========================
-  // VALIDAÇÕES
-  // =========================
 
   hasMinLength(): boolean {
     return this.formData.senha.length >= 8;
@@ -133,30 +121,33 @@ export class RegistroPage {
   }
 
   isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   isValidCPF(cpf: string): boolean {
     const cpfClean = cpf.replace(/\D/g, '');
-    
+
     if (cpfClean.length !== 11) return false;
     if (/^(\d)\1{10}$/.test(cpfClean)) return false;
-    
+
     let sum = 0;
+
     for (let i = 0; i < 9; i++) {
       sum += parseInt(cpfClean.charAt(i)) * (10 - i);
     }
+
     let digit1 = 11 - (sum % 11);
     digit1 = digit1 > 9 ? 0 : digit1;
-    
+
     sum = 0;
+
     for (let i = 0; i < 10; i++) {
       sum += parseInt(cpfClean.charAt(i)) * (11 - i);
     }
+
     let digit2 = 11 - (sum % 11);
     digit2 = digit2 > 9 ? 0 : digit2;
-    
+
     return digit1 === parseInt(cpfClean.charAt(9)) &&
            digit2 === parseInt(cpfClean.charAt(10));
   }
@@ -167,11 +158,12 @@ export class RegistroPage {
   }
 
   isValidPassword(password: string): boolean {
-    if (password.length < 8) return false;
-    if (!/[A-Z]/.test(password)) return false;
-    if (!/[a-z]/.test(password)) return false;
-    if (!/[0-9]/.test(password)) return false;
-    return true;
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /[0-9]/.test(password)
+    );
   }
 
   isValidDate(date: string): boolean {
@@ -180,7 +172,6 @@ export class RegistroPage {
 
     const [day, month, year] = date.split('/').map(Number);
     const dateObj = new Date(year, month - 1, day);
-
     const today = new Date();
 
     return dateObj.getDate() === day &&
@@ -189,43 +180,36 @@ export class RegistroPage {
            dateObj <= today;
   }
 
-  // =========================
-  // CEP
-  // =========================
-
   async buscarCep() {
     const cepClean = this.formData.cep.replace(/\D/g, '');
-    
+
     if (cepClean.length !== 8) {
       this.errorMessage = 'CEP deve conter 8 dígitos.';
       return;
     }
-    
+
     this.cepLoading = true;
     this.errorMessage = '';
-    
+
     try {
       const response: any = await this.http
         .get('https://viacep.com.br/ws/' + cepClean + '/json/')
         .toPromise();
-      
+
       if (response && !response.erro) {
         this.formData.endereco = response.logradouro + ', ' + response.bairro;
       } else {
         this.errorMessage = 'CEP não encontrado.';
         this.formData.endereco = '';
       }
-    } catch (error) {
+
+    } catch (error: any) {
+      console.error('Erro CEP:', error);
       this.errorMessage = 'Erro ao buscar CEP.';
-      console.error(error);
     } finally {
       this.cepLoading = false;
     }
   }
-
-  // =========================
-  // FOTO DE PERFIL
-  // =========================
 
   async takePhoto() {
     try {
@@ -237,6 +221,7 @@ export class RegistroPage {
       });
 
       this.formData.foto = image.dataUrl || '';
+
     } catch (error) {
       console.error('Erro ao capturar foto:', error);
     }
@@ -244,20 +229,19 @@ export class RegistroPage {
 
   async onFotoSelecionada(event: any) {
     const file = event.target.files?.[0];
+
     if (!file) {
       return;
     }
 
     const reader = new FileReader();
+
     reader.onload = () => {
       this.formData.foto = reader.result as string;
     };
+
     reader.readAsDataURL(file);
   }
-
-  // =========================
-  // CADASTRO
-  // =========================
 
   async cadastrar() {
     if (!this.isFormValid()) {

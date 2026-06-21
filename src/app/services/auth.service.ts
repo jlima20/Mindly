@@ -20,6 +20,8 @@ export interface User {
   especialidade?: string;
   crp?: string;
   descricao?: string;
+  whatsapp?: string;
+ instagram?: string;
 }
 
 @Injectable({

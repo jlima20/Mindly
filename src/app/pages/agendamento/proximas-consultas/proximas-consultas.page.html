@@ -1,44 +1,110 @@
-<!-- src/app/pages/agendamento/proximas-consultas/proximas-consultas.page.html -->
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/perfil-paciente"></ion-back-button>
     </ion-buttons>
+
     <ion-title>Próximas Consultas</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+
   <ion-card>
     <ion-card-header>
       <ion-card-title>Seus Próximos Agendamentos</ion-card-title>
     </ion-card-header>
+
     <ion-card-content>
-      <ion-list *ngIf="agendamentos$ | async as agendamentos; else noUpcomingAppointments">
+
+      <div *ngIf="isLoading" class="ion-text-center ion-padding">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Carregando agendamentos...</p>
+      </div>
+
+      <ion-list *ngIf="!isLoading && agendamentos.length > 0">
+
         <ion-item-sliding *ngFor="let agendamento of agendamentos">
+
           <ion-item>
             <ion-label>
-              <h2>{{ formatarDataHora(agendamento.dataHora) }} com {{ agendamento.psicologoEmail }}</h2>
-              <p>Duração: {{ agendamento.duracaoMinutos }} min</p>
-              <p>Status: <strong>{{ agendamento.status }}</strong></p>
-              <p *ngIf="agendamento.observacoes">Obs: {{ agendamento.observacoes }}</p>
+
+              <h2>{{ agendamento.psicologoNome }}</h2>
+
+              <p>
+                <strong>Data:</strong>
+                {{ formatarDataHora(agendamento.dataHora) }}
+              </p>
+
+              <p>
+                <strong>Duração:</strong>
+                {{ agendamento.duracaoMinutos }} min
+              </p>
+
+              <p>
+                <strong>Status:</strong>
+                {{ agendamento.status }}
+              </p>
+
+              <p *ngIf="agendamento.observacoes">
+                <strong>Obs:</strong>
+                {{ agendamento.observacoes }}
+              </p>
+
+              <div class="ion-margin-top">
+
+                <ion-button
+                  *ngIf="agendamento.whatsapp"
+                  size="small"
+                  color="success"
+                  fill="outline"
+                  (click)="abrirWhatsapp(agendamento.whatsapp)">
+
+                  WhatsApp
+                </ion-button>
+
+                <ion-button
+                  *ngIf="agendamento.instagram"
+                  size="small"
+                  color="tertiary"
+                  fill="outline"
+                  (click)="abrirInstagram(agendamento.instagram)">
+
+                  Instagram
+                </ion-button>
+
+              </div>
+
             </ion-label>
           </ion-item>
 
           <ion-item-options side="end">
-            <ion-item-option color="danger" (click)="cancelarAgendamento(agendamento.id!)">
-              <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+            <ion-item-option
+              color="danger"
+              (click)="cancelarAgendamento(agendamento.id)">
               Cancelar
             </ion-item-option>
           </ion-item-options>
+
         </ion-item-sliding>
+
       </ion-list>
 
-      <ng-template #noUpcomingAppointments>
-        <ion-item>
-          <ion-label>Você não possui agendamentos futuros.</ion-label>
-        </ion-item>
-      </ng-template>
+      <div
+        *ngIf="!isLoading && agendamentos.length === 0"
+        class="ion-text-center ion-padding">
+
+        <p>Você não possui agendamentos futuros.</p>
+
+        <ion-button
+          fill="outline"
+          routerLink="/lista-psicologos">
+          Buscar psicólogos
+        </ion-button>
+
+      </div>
+
     </ion-card-content>
   </ion-card>
+
 </ion-content>

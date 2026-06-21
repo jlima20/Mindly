@@ -3,67 +3,441 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="lista-psicologos"></ion-back-button>
     </ion-buttons>
-    <ion-title>Perfil do Profissional</ion-title>
+
+    <ion-title>
+      Perfil do Profissional
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content class="ion-padding">
+
+
   <!-- Spinner de Carregamento -->
-  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+  <div 
+    *ngIf="isLoading" 
+    class="ion-text-center ion-padding">
+
     <ion-spinner name="crescent"></ion-spinner>
-    <p>Carregando detalhes da API...</p>
+
+    <p>
+      Carregando detalhes do profissional...
+    </p>
+
   </div>
+
+
+
 
   <!-- Informações do Psicólogo -->
-  <div *ngIf="!isLoading && psicologo">
+  <div 
+    *ngIf="!isLoading && psicologo">
+
+
+
+    <!-- Cabeçalho -->
     <div class="perfil-header ion-text-center">
+
+
       <ion-avatar class="foto-perfil">
-        <img [src]="psicologo.fotoUrl || 'assets/image.png'" />
+
+        <img 
+          [src]="psicologo.fotoUrl || psicologo.foto || 'assets/image.png'" />
+
       </ion-avatar>
-      <h1>{{ psicologo.nome }}</h1>
-      <ion-badge color="secondary">{{ psicologo.especialidade }}</ion-badge>
-      <p class="crp">CRP: {{ psicologo.crp }}</p>
+
+
+
+      <h1>
+        {{ psicologo.nome }} {{ psicologo.sobrenome }}
+      </h1>
+
+
+
+      <ion-badge color="secondary">
+
+        {{ psicologo.especialidade }}
+
+      </ion-badge>
+
+
+
+      <p class="crp">
+
+        CRP: {{ psicologo.crp }}
+
+      </p>
+
+
     </div>
 
+
+
+
+
+
+    <!-- Sobre -->
     <ion-card class="ion-margin-top">
+
+
       <ion-card-header>
-        <ion-card-title>Sobre</ion-card-title>
+
+        <ion-card-title>
+          Sobre
+        </ion-card-title>
+
       </ion-card-header>
+
+
+
       <ion-card-content>
-        {{ psicologo.descricao }}
+
+
+        <p *ngIf="psicologo.descricao">
+
+          {{ psicologo.descricao }}
+
+        </p>
+
+
+
+        <p *ngIf="!psicologo.descricao">
+
+          Este profissional ainda não adicionou uma descrição.
+
+        </p>
+
+
       </ion-card-content>
+
+
     </ion-card>
 
+
+
+
+
+
+
+
+    <!-- Informações de Atendimento -->
     <ion-card>
+
+
       <ion-card-header>
-        <ion-card-title>Informações de Atendimento</ion-card-title>
+
+        <ion-card-title>
+          Informações de Atendimento
+        </ion-card-title>
+
       </ion-card-header>
+
+
+
+
       <ion-card-content>
+
+
+
+        <!-- Email -->
         <ion-item lines="none">
-          <ion-icon name="mail-outline" slot="start"></ion-icon>
+
+
+          <ion-icon
+            name="mail-outline"
+            slot="start">
+          </ion-icon>
+
+
+
           <ion-label>
-            <h3>E-mail</h3>
-            <p>{{ psicologo.email }}</p>
+
+
+            <h3>
+              E-mail
+            </h3>
+
+
+            <p>
+              {{ psicologo.email }}
+            </p>
+
+
           </ion-label>
+
+
         </ion-item>
+
+
+
+
+
+
+        <!-- Valor -->
         <ion-item lines="none">
-          <ion-icon name="cash-outline" slot="start"></ion-icon>
+
+
+          <ion-icon
+            name="cash-outline"
+            slot="start">
+          </ion-icon>
+
+
+
           <ion-label>
-            <h3>Valor da Consulta</h3>
-            <p>{{ psicologo.valorConsulta | currency:'BRL' }}</p>
+
+
+            <h3>
+              Valor da Consulta
+            </h3>
+
+
+            <p>
+              {{ psicologo.valorConsulta | currency:'BRL' }}
+            </p>
+
+
           </ion-label>
+
+
         </ion-item>
+
+
+
+
+
+
+
+
+        <!-- WhatsApp -->
+        <ion-item 
+          lines="none"
+          button
+          *ngIf="psicologo.whatsapp"
+          (click)="abrirWhatsApp()">
+
+
+
+          <ion-icon
+            name="logo-whatsapp"
+            slot="start">
+          </ion-icon>
+
+
+
+          <ion-label>
+
+
+            <h3>
+              WhatsApp
+            </h3>
+
+
+            <p>
+              {{ psicologo.whatsapp }}
+            </p>
+
+
+          </ion-label>
+
+
+
+        </ion-item>
+
+
+
+
+
+
+
+
+        <!-- Instagram -->
+        <ion-item 
+          lines="none"
+          button
+          *ngIf="psicologo.instagram"
+          (click)="abrirInstagram()">
+
+
+
+          <ion-icon
+            name="logo-instagram"
+            slot="start">
+          </ion-icon>
+
+
+
+          <ion-label>
+
+
+            <h3>
+              Instagram
+            </h3>
+
+
+            <p>
+              @{{ psicologo.instagram.replace('@','') }}
+            </p>
+
+
+          </ion-label>
+
+
+
+        </ion-item>
+
+
+
+
+
+
+
+
+
+        <!-- Botão WhatsApp -->
+        <ion-button
+
+          *ngIf="psicologo.whatsapp"
+
+          expand="block"
+
+          color="success"
+
+          class="ion-margin-top"
+
+          (click)="abrirWhatsApp()">
+
+
+
+          <ion-icon
+            name="logo-whatsapp"
+            slot="start">
+          </ion-icon>
+
+
+          Conversar no WhatsApp
+
+
+        </ion-button>
+
+
+
+
+
+
+
+
+
+        <!-- Botão Instagram -->
+        <ion-button
+
+          *ngIf="psicologo.instagram"
+
+          expand="block"
+
+          color="tertiary"
+
+          (click)="abrirInstagram()">
+
+
+
+          <ion-icon
+            name="logo-instagram"
+            slot="start">
+          </ion-icon>
+
+
+
+          Ver Instagram
+
+
+
+        </ion-button>
+
+
+
+
       </ion-card-content>
+
+
     </ion-card>
 
-    <ion-button expand="block" class="ion-margin-top" (click)="agendar()">
+
+
+
+
+
+
+
+
+    <!-- Agendamento -->
+    <ion-button
+
+      expand="block"
+
+      class="ion-margin-top"
+
+      (click)="agendar()">
+
+
+
       Agendar Consulta
+
+
+
     </ion-button>
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
 
   <!-- Mensagem de Erro -->
-  <div *ngIf="!isLoading && !psicologo" class="ion-text-center ion-padding">
-    <p>Não foi possível carregar as informações deste profissional.</p>
-    <ion-button fill="clear" routerLink="/lista-psicologos">Voltar para a lista</ion-button>
+  <div
+
+    *ngIf="!isLoading && !psicologo"
+
+    class="ion-text-center ion-padding">
+
+
+
+    <p>
+      Não foi possível carregar as informações deste profissional.
+    </p>
+
+
+
+
+    <ion-button
+
+      fill="clear"
+
+      routerLink="/lista-psicologos">
+
+
+
+      Voltar para a lista
+
+
+
+    </ion-button>
+
+
+
   </div>
+
+
+
+
+
 </ion-content>

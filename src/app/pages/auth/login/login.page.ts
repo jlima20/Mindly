@@ -47,13 +47,16 @@ export class LoginPage {
 
         const user = this.auth.getCurrentUser();
 
-        if (user?.tipoUsuario === 'paciente') {
-          this.router.navigate(['/perfil-paciente']);
-        } else if (user?.tipoUsuario === 'psicologo') {
-          this.router.navigate(['/perfil-psicologo']);
-        } else {
-          this.router.navigate(['/home']); // fallback
-        }
+console.log('TIPO:', user?.tipoUsuario);
+console.log(user);
+
+if (user?.tipoUsuario === 'paciente') {
+  this.router.navigate(['/perfil-paciente']);
+} else if (user?.tipoUsuario === 'psicologo') {
+  this.router.navigate(['/perfil-psicologo']);
+} else {
+  this.router.navigate(['/home']);
+}
 
       } else {
         this.errorMessage = 'Email ou senha incorretos.';

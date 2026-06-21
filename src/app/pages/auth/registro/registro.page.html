@@ -2,12 +2,10 @@
 
   <h2>Cadastro</h2>
 
-  <!-- Mensagem de erro -->
   <ion-text *ngIf="errorMessage" color="danger" class="error-message">
     {{ errorMessage }}
   </ion-text>
 
-  <!-- Dados Pessoais -->
   <h3>Dados Pessoais</h3>
 
   <ion-item>
@@ -21,22 +19,22 @@
   </ion-item>
 
   <ion-item>
-  <ion-label position="floating">CPF *</ion-label>
-  <ion-input
-    [(ngModel)]="formData.cpf"
-    (ionInput)="formatarCPF($event)"
-    maxlength="14">
-  </ion-input>
-</ion-item>
+    <ion-label position="floating">CPF *</ion-label>
+    <ion-input
+      [(ngModel)]="formData.cpf"
+      (ionInput)="formatarCPF($event)"
+      maxlength="14">
+    </ion-input>
+  </ion-item>
 
   <ion-item>
-  <ion-label position="floating">Data de Nascimento *</ion-label>
-  <ion-input
-    [(ngModel)]="formData.dataNascimento"
-    (ionInput)="formatarData($event)"
-    maxlength="10">
-  </ion-input>
-</ion-item>
+    <ion-label position="floating">Data de Nascimento *</ion-label>
+    <ion-input
+      [(ngModel)]="formData.dataNascimento"
+      (ionInput)="formatarData($event)"
+      maxlength="10">
+    </ion-input>
+  </ion-item>
 
   <ion-item>
     <ion-label position="stacked">Foto de perfil</ion-label>
@@ -52,15 +50,14 @@
   </div>
 
   <ion-item>
-  <ion-label position="floating">Telefone *</ion-label>
-  <ion-input
-    [(ngModel)]="formData.telefone"
-    (ionInput)="formatarTelefone($event)"
-    maxlength="15">
-  </ion-input>
-</ion-item>
+    <ion-label position="floating">Telefone *</ion-label>
+    <ion-input
+      [(ngModel)]="formData.telefone"
+      (ionInput)="formatarTelefone($event)"
+      maxlength="15">
+    </ion-input>
+  </ion-item>
 
-  <!-- Dados de Acesso -->
   <h3>Dados de Acesso</h3>
 
   <ion-item>
@@ -73,24 +70,27 @@
     <ion-input [(ngModel)]="formData.senha" placeholder="Digite sua senha" type="password" required></ion-input>
   </ion-item>
 
-  <!-- Requisitos de Senha -->
   <div class="password-requirements" *ngIf="formData.senha">
     <p><small>Requisitos de senha:</small></p>
+
     <p [class.valid]="hasMinLength()">
       <ion-icon *ngIf="hasMinLength()" name="checkmark-circle"></ion-icon>
       <ion-icon *ngIf="!hasMinLength()" name="close-circle"></ion-icon>
       Mínimo 8 caracteres
     </p>
+
     <p [class.valid]="hasUpperCase()">
       <ion-icon *ngIf="hasUpperCase()" name="checkmark-circle"></ion-icon>
       <ion-icon *ngIf="!hasUpperCase()" name="close-circle"></ion-icon>
       Letra maiúscula
     </p>
+
     <p [class.valid]="hasLowerCase()">
       <ion-icon *ngIf="hasLowerCase()" name="checkmark-circle"></ion-icon>
       <ion-icon *ngIf="!hasLowerCase()" name="close-circle"></ion-icon>
       Letra minúscula
     </p>
+
     <p [class.valid]="hasNumber()">
       <ion-icon *ngIf="hasNumber()" name="checkmark-circle"></ion-icon>
       <ion-icon *ngIf="!hasNumber()" name="close-circle"></ion-icon>
@@ -107,18 +107,17 @@
     <small>As senhas não coincidem</small>
   </ion-text>
 
-  <!-- Endereço -->
   <h3>Endereço</h3>
 
   <ion-item>
-  <ion-label position="floating">CEP *</ion-label>
-  <ion-input
-    [(ngModel)]="formData.cep"
-    (ionInput)="formatarCEP($event)"
-    (ionBlur)="buscarCep()"
-    maxlength="9">
-  </ion-input>
-</ion-item>
+    <ion-label position="floating">CEP *</ion-label>
+    <ion-input
+      [(ngModel)]="formData.cep"
+      (ionInput)="formatarCEP($event)"
+      (ionBlur)="buscarCep()"
+      maxlength="9">
+    </ion-input>
+  </ion-item>
 
   <ion-item>
     <ion-label position="floating">Endereço *</ion-label>
@@ -130,7 +129,6 @@
     <ion-input [(ngModel)]="formData.complemento" placeholder="Apartamento, bloco, etc."></ion-input>
   </ion-item>
 
-  <!-- Tipo de Usuário -->
   <h3>Tipo de Usuário</h3>
 
   <ion-item>
@@ -141,15 +139,41 @@
     </ion-select>
   </ion-item>
 
+  <ng-container *ngIf="formData.tipoUsuario === 'psicologo'">
+
+    <h3>Contato Profissional</h3>
+
+    <ion-item>
+      <ion-label position="floating">WhatsApp do Psicólogo</ion-label>
+      <ion-input
+        [(ngModel)]="formData.whatsapp"
+        placeholder="Ex: 5511999999999"
+        type="tel">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Instagram do Psicólogo</ion-label>
+      <ion-input
+        [(ngModel)]="formData.instagram"
+        placeholder="Ex: drcarlos">
+      </ion-input>
+    </ion-item>
+
+  </ng-container>
+
   <ion-button
     expand="block"
     (click)="cadastrar()"
     [disabled]="!isFormValid() || isLoading"
     class="register-button">
+
     <span *ngIf="isLoading">Cadastrando...</span>
     <span *ngIf="!isLoading">Criar Conta</span>
   </ion-button>
 
-  <p routerLink="/login" class="login-link">Já tem conta? Faça login</p>
+  <p routerLink="/login" class="login-link">
+    Já tem conta? Faça login
+  </p>
 
 </ion-content>
