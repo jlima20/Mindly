@@ -1,38 +1,49 @@
+<ion-content class="login-content">
 
-<ion-content class="ion-padding">
+  <main class="login-box">
 
-  <h2>Login</h2>
+    <h2>Login</h2>
 
-  <!-- Mensagem de erro -->
-  <ion-text *ngIf="errorMessage" color="danger" class="error-message">
-    {{ errorMessage }}
-  </ion-text>
+    <ion-text *ngIf="errorMessage" color="danger" class="error-message">
+      {{ errorMessage }}
+    </ion-text>
 
-  <ion-item>
-    <ion-label position="floating">Email *</ion-label>
-    <ion-input [(ngModel)]="email" placeholder="seu@email.com" type="email" required></ion-input>
-  </ion-item>
+    <ion-item>
+      <ion-input
+        [(ngModel)]="email"
+        placeholder="Email"
+        type="email">
+      </ion-input>
+    </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Senha *</ion-label>
-    <ion-input [(ngModel)]="senha" placeholder="Digite sua senha" type="password" required></ion-input>
-  </ion-item>
+    <ion-item>
+      <ion-input
+        [(ngModel)]="senha"
+        placeholder="Senha"
+        type="password">
+      </ion-input>
+    </ion-item>
 
-  <ion-button
-    expand="block"
-    (click)="entrar()"
-    [disabled]="!isFormValid() || isLoading"
-    class="login-button">
-    <span *ngIf="isLoading">Entrando...</span>
-    <span *ngIf="!isLoading">Entrar</span>
-  </ion-button>
+    <ion-button
+      expand="block"
+      (click)="entrar()"
+      [disabled]="!isFormValid() || isLoading"
+      class="login-button">
+      {{ isLoading ? 'Entrando...' : 'Entrar' }}
+    </ion-button>
 
-  <ion-button expand="block" fill="clear" routerLink="/esqueci-senha">
-    Esqueci minha senha 
-  </ion-button>
+    <p class="forgot-link" routerLink="/esqueci-senha">
+      Esqueceu sua senha?
+    </p>
 
-  <ion-button expand="block" routerLink="/register" fill="outline" class="register-button">
-    Criar conta
-  </ion-button>
+    <p class="register-link" routerLink="/register">
+      Cadastre-se
+    </p>
+
+  </main>
+
+  <p class="footer-text">
+    Seus dados são seguros e confidenciais
+  </p>
 
 </ion-content>

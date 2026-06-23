@@ -1,39 +1,85 @@
-// src/app/pages/agendamento/proximas-consultas/proximas-consultas.page.scss
 ion-content {
-  --background: #f4f5f8;
+  --background: #f6f8fc;
+}
+
+ion-toolbar {
+  --background: #f6f8fc;
+  --border-width: 0;
+  --color: #3e5f8a;
+}
+
+ion-title {
+  color: #3e5f8a;
+  font-weight: 800;
 }
 
 ion-card {
-  margin: 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 88%;
+  max-width: 380px;
+  margin: 52px auto 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 ion-card-title {
-  font-weight: bold;
-  color: var(--ion-color-primary);
+  text-align: center;
+  color: #3e5f8a;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+ion-card-content {
+  padding: 18px;
+}
+
+ion-list {
+  background: transparent;
 }
 
 ion-item {
-  --padding-start: 0;
-  margin-bottom: 8px;
+  --background: #d9d9d9;
+  --border-radius: 18px;
+  --border-width: 0;
+  --inner-border-width: 0;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+
+  border-radius: 18px;
+  margin-bottom: 14px;
 }
 
-ion-label {
-  h2 {
-    font-weight: 600;
-    color: #333;
-  }
-  p {
-    color: #666;
-    font-size: 0.9em;
-  }
-  strong {
-    color: var(--ion-color-primary);
-    text-transform: capitalize;
-  }
+ion-label h2 {
+  color: #111;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+ion-label p {
+  color: #4d5663;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+ion-label strong {
+  color: #3e5f8a;
+}
+
+ion-button {
+  --border-radius: 16px;
+  text-transform: none;
+  font-weight: 700;
+  margin-right: 6px;
 }
 
 ion-item-option {
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.ion-text-center {
+  color: #6b7a90;
+}
+
+ion-spinner {
+  color: #3e5f8a;
 }

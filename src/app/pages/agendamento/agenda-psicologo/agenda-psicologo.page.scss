@@ -1,39 +1,129 @@
-// src/app/pages/agendamento/agenda-psicologo/agenda-psicologo.page.scss
-ion-content {
-  --background: #f4f5f8;
+.agenda-content {
+  --background: #f6f8fc;
+}
+
+ion-toolbar {
+  --background: #f6f8fc;
+  --border-width: 0;
+  --color: #3e5f8a;
+}
+
+ion-title {
+  color: #3e5f8a;
+  font-weight: 800;
+}
+
+.hero {
+  padding: 28px 20px 8px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: #3e5f8a;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.hero p {
+  margin: 8px 0 0;
+  color: #6b7a90;
+  font-size: 14px;
 }
 
 ion-card {
-  margin: 16px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 88%;
+  max-width: 380px;
+  margin: 18px auto;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.date-card ion-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+.date-card h2 {
+  color: #111;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.date-card p {
+  color: #6b7a90;
+  font-size: 13px;
 }
 
 ion-card-title {
-  font-weight: bold;
-  color: var(--ion-color-primary);
+  text-align: center;
+  color: #3e5f8a;
+  font-size: 22px;
+  font-weight: 800;
 }
 
-ion-item {
-  --padding-start: 0;
-  margin-bottom: 8px;
+ion-list {
+  background: transparent;
 }
 
-ion-label {
-  h2 {
-    font-weight: 600;
-    color: #333;
-  }
-  p {
-    color: #666;
-    font-size: 0.9em;
-  }
-  strong {
-    color: var(--ion-color-primary);
-    text-transform: capitalize;
-  }
+.appointments-card ion-item {
+  --background: #d9d9d9;
+  --border-radius: 18px;
+  --border-width: 0;
+  --inner-border-width: 0;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+
+  border-radius: 18px;
+  margin-bottom: 14px;
+}
+
+ion-label h2 {
+  color: #111;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+ion-label p {
+  color: #4d5663;
+  font-size: 14px;
+}
+
+ion-label strong {
+  color: #3e5f8a;
 }
 
 ion-item-option {
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px 10px;
+  color: #6b7a90;
+}
+
+.empty-icon {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.empty-state h2 {
+  margin: 0;
+  color: #3e5f8a;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.empty-state p {
+  margin-top: 8px;
+  font-size: 14px;
 }

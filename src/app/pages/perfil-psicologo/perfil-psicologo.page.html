@@ -10,6 +10,10 @@
 
 <ion-content class="ion-padding">
 
+  <div class="welcome-box">
+    <h1>Bem-vindo(a)!</h1>
+  </div>
+
   <ion-card class="perfil-card">
     <div class="topo">
 
@@ -20,52 +24,31 @@
       </div>
 
       <div class="foto-actions" *ngIf="editMode">
-
-        <ion-button
-          size="small"
-          expand="block"
-          fill="outline"
-          (click)="tirarFoto()">
+        <ion-button size="small" expand="block" fill="outline" (click)="tirarFoto()">
           Tirar foto
         </ion-button>
 
-        <ion-button
-          size="small"
-          expand="block"
-          fill="outline"
-          (click)="pickPhotoFromGallery()">
+        <ion-button size="small" expand="block" fill="outline" (click)="pickPhotoFromGallery()">
           Escolher da galeria
         </ion-button>
 
-        <input
-          type="file"
-          accept="image/*"
-          (change)="onFotoSelecionada($event)" />
+        <input type="file" accept="image/*" (change)="onFotoSelecionada($event)" />
 
         <div *ngIf="newPhotoTemp" class="preview">
           <img [src]="newPhotoTemp" alt="Preview">
 
-          <ion-button
-            size="small"
-            expand="block"
-            (click)="confirmarFoto()">
+          <ion-button size="small" expand="block" (click)="confirmarFoto()">
             Confirmar foto
           </ion-button>
 
-          <ion-button
-            size="small"
-            expand="block"
-            fill="clear"
-            (click)="cancelarNovaFoto()">
+          <ion-button size="small" expand="block" fill="clear" (click)="cancelarNovaFoto()">
             Cancelar
           </ion-button>
         </div>
-
       </div>
 
       <h2>{{ user?.nome }} {{ user?.sobrenome }}</h2>
       <p class="subtitle">Psicólogo</p>
-
     </div>
 
     <div class="info">
@@ -105,10 +88,7 @@
       </p>
     </div>
 
-    <ion-button
-      expand="full"
-      fill="outline"
-      (click)="toggleEditMode()">
+    <ion-button expand="full" fill="outline" (click)="toggleEditMode()">
       {{ editMode ? 'Fechar edição' : 'Editar perfil' }}
     </ion-button>
   </ion-card>
@@ -119,7 +99,6 @@
     </ion-card-header>
 
     <ion-card-content>
-
       <ion-item>
         <ion-label position="stacked">Nome</ion-label>
         <ion-input [(ngModel)]="user.nome"></ion-input>
@@ -145,26 +124,17 @@
 
       <ion-item>
         <ion-label position="stacked">CRP</ion-label>
-        <ion-input
-          [(ngModel)]="user.crp"
-          placeholder="Ex: CRP 05/12345">
-        </ion-input>
+        <ion-input [(ngModel)]="user.crp" placeholder="Ex: CRP 05/12345"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">WhatsApp</ion-label>
-        <ion-input
-          [(ngModel)]="user.whatsapp"
-          placeholder="Ex: 5511999999999">
-        </ion-input>
+        <ion-input [(ngModel)]="user.whatsapp" placeholder="Ex: 5511999999999"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Instagram</ion-label>
-        <ion-input
-          [(ngModel)]="user.instagram"
-          placeholder="Ex: drcarlos">
-        </ion-input>
+        <ion-input [(ngModel)]="user.instagram" placeholder="Ex: drcarlos"></ion-input>
       </ion-item>
 
       <ion-item>
@@ -176,13 +146,9 @@
         </ion-textarea>
       </ion-item>
 
-      <ion-button
-        expand="full"
-        [disabled]="isLoadingProfile"
-        (click)="salvarPerfil()">
+      <ion-button expand="full" [disabled]="isLoadingProfile" (click)="salvarPerfil()">
         {{ isLoadingProfile ? 'Salvando...' : 'Salvar alterações' }}
       </ion-button>
-
     </ion-card-content>
   </ion-card>
 
@@ -192,28 +158,25 @@
     </ion-card-header>
 
     <ion-card-content>
-
-      <ion-button
-        expand="full"
-        fill="outline"
-        (click)="carregarPacientes()">
+      <ion-button expand="full" fill="outline" (click)="carregarPacientes()">
         {{ mostrarPacientes ? 'Ocultar pacientes' : 'Ver meus pacientes' }}
       </ion-button>
 
-      <ion-button
-        expand="full"
-        fill="outline"
-        (click)="togglePasswordForm()">
+      <ion-button expand="full" fill="outline" routerLink="/agenda-psicologo">
+        Minha agenda
+      </ion-button>
+
+      <ion-button expand="full" fill="outline" (click)="toggleConsultas()">
+        {{ mostrarConsultas ? 'Ocultar consultas' : 'Mostrar consultas' }}
+      </ion-button>
+
+      <ion-button expand="full" fill="outline" (click)="togglePasswordForm()">
         {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
       </ion-button>
 
-      <ion-button
-        expand="full"
-        color="danger"
-        (click)="logout()">
+      <ion-button expand="full" color="danger" (click)="logout()">
         Sair
       </ion-button>
-
     </ion-card-content>
   </ion-card>
 
@@ -223,9 +186,7 @@
     </ion-card-header>
 
     <ion-card-content>
-
       <ion-list *ngIf="pacientes.length > 0; else semPacientes">
-
         <ion-item *ngFor="let paciente of pacientes">
           <ion-avatar slot="start">
             <img [src]="paciente.foto || 'assets/avatar.png'">
@@ -237,51 +198,56 @@
             <p *ngIf="paciente.telefone">{{ paciente.telefone }}</p>
           </ion-label>
         </ion-item>
-
       </ion-list>
 
       <ng-template #semPacientes>
-        <p class="ion-text-center">
-          Nenhum paciente associado ainda.
-        </p>
+        <p class="ion-text-center">Nenhum paciente associado ainda.</p>
       </ng-template>
-
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="proximosAgendamentos.length > 0">
+  <ion-card *ngIf="mostrarConsultas">
     <ion-card-header>
-      <ion-card-title>Próximas consultas</ion-card-title>
+      <ion-card-title>Todas as consultas</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-
-      <ion-list>
-
-        <ion-item *ngFor="let agendamento of proximosAgendamentos">
+      <ion-list *ngIf="consultas.length > 0; else semConsultas">
+        <ion-item *ngFor="let consulta of consultas">
           <ion-avatar slot="start">
-            <img [src]="agendamento.pacienteFoto || 'assets/avatar.png'">
+            <img [src]="consulta.pacienteFoto || 'assets/avatar.png'">
           </ion-avatar>
 
           <ion-label>
-            <h2>{{ agendamento.pacienteNome }}</h2>
+            <h2>{{ consulta.pacienteNome }}</h2>
 
             <p>
               Data:
-              {{ agendamento.dataHora | date:'dd/MM/yyyy' }}
+              {{ consulta.dataHora | date:'dd/MM/yyyy' }}
               às
-              {{ agendamento.dataHora | date:'HH:mm' }}
+              {{ consulta.dataHora | date:'HH:mm' }}
             </p>
 
             <p>
               Status:
-              <strong>{{ agendamento.status }}</strong>
+              <strong
+                [class.status-concluida]="consulta.consultaPassada"
+                [class.status-cancelada]="consulta.statusExibido === 'cancelada'"
+                [class.status-confirmada]="consulta.statusExibido === 'confirmada'">
+                {{ consulta.statusExibido | titlecase }}
+              </strong>
+            </p>
+
+            <p *ngIf="consulta.observacoes">
+              Obs: {{ consulta.observacoes }}
             </p>
           </ion-label>
         </ion-item>
-
       </ion-list>
 
+      <ng-template #semConsultas>
+        <p class="ion-text-center">Nenhuma consulta marcada ainda.</p>
+      </ng-template>
     </ion-card-content>
   </ion-card>
 
@@ -291,42 +257,28 @@
     </ion-card-header>
 
     <ion-card-content>
-
       <ion-item>
         <ion-label position="stacked">Senha atual</ion-label>
-        <ion-input
-          [(ngModel)]="currentPassword"
-          type="password">
-        </ion-input>
+        <ion-input [(ngModel)]="currentPassword" type="password"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Nova senha</ion-label>
-        <ion-input
-          [(ngModel)]="newPassword"
-          type="password">
-        </ion-input>
+        <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="stacked">Confirmar nova senha</ion-label>
-        <ion-input
-          [(ngModel)]="confirmPassword"
-          type="password">
-        </ion-input>
+        <ion-input [(ngModel)]="confirmPassword" type="password"></ion-input>
       </ion-item>
 
-      <ion-button
-        expand="full"
-        [disabled]="isLoadingPassword"
-        (click)="alterarSenha()">
+      <ion-button expand="full" [disabled]="isLoadingPassword" (click)="alterarSenha()">
         {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
       </ion-button>
 
       <ion-text color="danger" *ngIf="passwordMessage">
         <p>{{ passwordMessage }}</p>
       </ion-text>
-
     </ion-card-content>
   </ion-card>
 

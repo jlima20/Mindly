@@ -1,43 +1,72 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="home"></ion-back-button>
+      <ion-back-button defaultHref="/perfil-paciente"></ion-back-button>
     </ion-buttons>
-    <ion-title>Encontrar Psicólogo</ion-title>
-  </ion-toolbar>
-  <ion-toolbar color="primary">
-    <ion-searchbar 
-      placeholder="Buscar por nome ou especialidade" 
-      (ionInput)="onSearchChange($event)"
-      debounce="500">
-    </ion-searchbar>
+
+    <ion-title>Psicólogos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <!-- Spinner de Carregamento -->
-  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+<ion-content class="lista-content">
+
+  <section class="hero">
+    <h1>Encontre seu psicólogo</h1>
+    <p>Busque profissionais disponíveis para agendar sua consulta.</p>
+
+    <ion-searchbar
+      placeholder="Nome ou especialidade"
+      (ionInput)="onSearchChange($event)"
+      debounce="500">
+    </ion-searchbar>
+  </section>
+
+  <div *ngIf="isLoading" class="loading-box">
     <ion-spinner name="crescent"></ion-spinner>
-    <p>Buscando informações na API...</p>
+    <p>Buscando psicólogos...</p>
   </div>
 
-  <!-- Lista de Psicólogos -->
-  <ion-list *ngIf="!isLoading">
-    <ion-item *ngFor="let psicologo of psicologos" (click)="verDetalhes(psicologo.id)" button detail="true">
-      <ion-avatar slot="start">
+  <section *ngIf="!isLoading && psicologos.length > 0" class="psicologos-lista">
+
+    <article
+      class="psicologo-card"
+      *ngFor="let psicologo of psicologos"
+      (click)="verDetalhes(psicologo.id)">
+
+      <div class="avatar">
         <img [src]="psicologo.fotoUrl || psicologo.foto || 'assets/image.png'" />
-      </ion-avatar>
-      <ion-label>
-        <h2>{{ psicologo.nome }}</h2>
-        <p>{{ psicologo.especialidade }}</p>
-        <ion-note color="primary">{{ psicologo.valorConsulta | currency:'BRL' }}</ion-note>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      </div>
 
-  <!-- Mensagem se não encontrar nada -->
-  <div *ngIf="!isLoading && psicologos.length === 0" class="ion-text-center ion-padding">
-    <ion-icon name="search-outline" style="font-size: 48px; color: var(--ion-color-step-400);"></ion-icon>
-    <p>Nenhum psicólogo encontrado para sua busca.</p>
+      <div class="info">
+        <h2>{{ psicologo.nome }} {{ psicologo.sobrenome }}</h2>
+
+        <p class="especialidade">
+          {{ psicologo.especialidade || 'Especialidade não informada' }}
+        </p>
+
+        <p class="descricao" *ngIf="psicologo.descricao">
+          {{ psicologo.descricao }}
+        </p>
+
+        <div class="card-footer">
+          <span *ngIf="psicologo.crp">
+            CRP: {{ psicologo.crp }}
+          </span>
+
+          <strong *ngIf="psicologo.valorConsulta">
+            {{ psicologo.valorConsulta | currency:'BRL' }}
+          </strong>
+        </div>
+      </div>
+
+    </article>
+
+  </section>
+
+  <div *ngIf="!isLoading && psicologos.length === 0" class="empty-state">
+    <div class="empty-icon">🔎</div>
+    <h2>Nenhum psicólogo encontrado</h2>
+    <p>Tente buscar por outro nome ou especialidade.</p>
   </div>
+
 </ion-content>

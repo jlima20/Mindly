@@ -4,32 +4,82 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <h2>Redefinir senha</h2>
+<ion-content>
 
-  <ion-item>
-    <ion-label position="floating">Email</ion-label>
-    <ion-input [(ngModel)]="email" type="email" autocomplete="email"></ion-input>
-  </ion-item>
+  <div class="container">
 
-  <ion-item>
-    <ion-label position="floating">Nova senha</ion-label>
-    <ion-input [(ngModel)]="novaSenha" type="password"></ion-input>
-  </ion-item>
+    <h2>Redefinir senha</h2>
 
-  <ion-item>
-    <ion-label position="floating">Confirmar nova senha</ion-label>
-    <ion-input [(ngModel)]="confirmarSenha" type="password"></ion-input>
-  </ion-item>
+    <p class="subtitle">
+      Informe seu e-mail e defina uma nova senha.
+    </p>
 
-  <ion-button expand="block" (click)="redefinirSenha()" [disabled]="isLoading">
-    <span *ngIf="isLoading">Aguarde...</span>
-    <span *ngIf="!isLoading">Redefinir senha</span>
-  </ion-button>
+    <ion-item>
+      <ion-label position="floating">
+        Email
+      </ion-label>
 
-  <ion-text *ngIf="message" class="feedback-message">{{ message }}</ion-text>
+      <ion-input
+        [(ngModel)]="email"
+        type="email"
+        autocomplete="email">
+      </ion-input>
+    </ion-item>
 
-  <ion-button expand="block" fill="clear" routerLink="/login" class="ion-margin-top">
-    Voltar para login
-  </ion-button>
+    <ion-item>
+      <ion-label position="floating">
+        Nova senha
+      </ion-label>
+
+      <ion-input
+        [(ngModel)]="novaSenha"
+        type="password">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">
+        Confirmar nova senha
+      </ion-label>
+
+      <ion-input
+        [(ngModel)]="confirmarSenha"
+        type="password">
+      </ion-input>
+    </ion-item>
+
+    <ion-button
+      expand="block"
+      (click)="redefinirSenha()"
+      [disabled]="isLoading">
+
+      <span *ngIf="isLoading">
+        Aguarde...
+      </span>
+
+      <span *ngIf="!isLoading">
+        Redefinir senha
+      </span>
+
+    </ion-button>
+
+    <ion-text
+      *ngIf="message"
+      class="feedback-message">
+
+      {{ message }}
+
+    </ion-text>
+
+    <ion-button
+      expand="block"
+      fill="clear"
+      routerLink="/login">
+
+      Voltar para login
+
+    </ion-button>
+
+  </div>
+
 </ion-content>

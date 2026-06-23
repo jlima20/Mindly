@@ -1,4 +1,4 @@
-﻿<ion-content class="ion-padding">
+﻿<ion-content class="register-content">
 
   <h2>Cadastro</h2>
 
@@ -6,174 +6,118 @@
     {{ errorMessage }}
   </ion-text>
 
-  <h3>Dados Pessoais</h3>
-
-  <ion-item>
-    <ion-label position="floating">Nome *</ion-label>
-    <ion-input [(ngModel)]="formData.nome" placeholder="Digite seu nome" required></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Sobrenome *</ion-label>
-    <ion-input [(ngModel)]="formData.sobrenome" placeholder="Digite seu sobrenome" required></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">CPF *</ion-label>
-    <ion-input
-      [(ngModel)]="formData.cpf"
-      (ionInput)="formatarCPF($event)"
-      maxlength="14">
-    </ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Data de Nascimento *</ion-label>
-    <ion-input
-      [(ngModel)]="formData.dataNascimento"
-      (ionInput)="formatarData($event)"
-      maxlength="10">
-    </ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="stacked">Foto de perfil</ion-label>
-    <input type="file" accept="image/*" (change)="onFotoSelecionada($event)" />
-  </ion-item>
-
-  <ion-button expand="block" fill="outline" (click)="takePhoto()">
-    Usar câmera
-  </ion-button>
-
-  <div *ngIf="formData.foto" class="photo-preview">
-    <img [src]="formData.foto" alt="Preview da foto" />
-  </div>
-
-  <ion-item>
-    <ion-label position="floating">Telefone *</ion-label>
-    <ion-input
-      [(ngModel)]="formData.telefone"
-      (ionInput)="formatarTelefone($event)"
-      maxlength="15">
-    </ion-input>
-  </ion-item>
-
-  <h3>Dados de Acesso</h3>
-
-  <ion-item>
-    <ion-label position="floating">Email *</ion-label>
-    <ion-input [(ngModel)]="formData.email" placeholder="seu@email.com" type="email" required></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Senha *</ion-label>
-    <ion-input [(ngModel)]="formData.senha" placeholder="Digite sua senha" type="password" required></ion-input>
-  </ion-item>
-
-  <div class="password-requirements" *ngIf="formData.senha">
-    <p><small>Requisitos de senha:</small></p>
-
-    <p [class.valid]="hasMinLength()">
-      <ion-icon *ngIf="hasMinLength()" name="checkmark-circle"></ion-icon>
-      <ion-icon *ngIf="!hasMinLength()" name="close-circle"></ion-icon>
-      Mínimo 8 caracteres
-    </p>
-
-    <p [class.valid]="hasUpperCase()">
-      <ion-icon *ngIf="hasUpperCase()" name="checkmark-circle"></ion-icon>
-      <ion-icon *ngIf="!hasUpperCase()" name="close-circle"></ion-icon>
-      Letra maiúscula
-    </p>
-
-    <p [class.valid]="hasLowerCase()">
-      <ion-icon *ngIf="hasLowerCase()" name="checkmark-circle"></ion-icon>
-      <ion-icon *ngIf="!hasLowerCase()" name="close-circle"></ion-icon>
-      Letra minúscula
-    </p>
-
-    <p [class.valid]="hasNumber()">
-      <ion-icon *ngIf="hasNumber()" name="checkmark-circle"></ion-icon>
-      <ion-icon *ngIf="!hasNumber()" name="close-circle"></ion-icon>
-      Número
-    </p>
-  </div>
-
-  <ion-item>
-    <ion-label position="floating">Confirmar Senha *</ion-label>
-    <ion-input [(ngModel)]="confirmarSenha" placeholder="Confirme sua senha" type="password" required></ion-input>
-  </ion-item>
-
-  <ion-text *ngIf="formData.senha && confirmarSenha && formData.senha !== confirmarSenha" color="danger">
-    <small>As senhas não coincidem</small>
-  </ion-text>
-
-  <h3>Endereço</h3>
-
-  <ion-item>
-    <ion-label position="floating">CEP *</ion-label>
-    <ion-input
-      [(ngModel)]="formData.cep"
-      (ionInput)="formatarCEP($event)"
-      (ionBlur)="buscarCep()"
-      maxlength="9">
-    </ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Endereço *</ion-label>
-    <ion-input [(ngModel)]="formData.endereco" placeholder="Rua, número, bairro" required></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="floating">Complemento</ion-label>
-    <ion-input [(ngModel)]="formData.complemento" placeholder="Apartamento, bloco, etc."></ion-input>
-  </ion-item>
-
-  <h3>Tipo de Usuário</h3>
-
-  <ion-item>
-    <ion-label>Tipo de Usuário *</ion-label>
-    <ion-select [(ngModel)]="formData.tipoUsuario" placeholder="Selecione o tipo" required>
-      <ion-select-option value="paciente">Paciente</ion-select-option>
-      <ion-select-option value="psicologo">Psicólogo</ion-select-option>
-    </ion-select>
-  </ion-item>
-
-  <ng-container *ngIf="formData.tipoUsuario === 'psicologo'">
-
-    <h3>Contato Profissional</h3>
+  <div class="form-card">
 
     <ion-item>
-      <ion-label position="floating">WhatsApp do Psicólogo</ion-label>
-      <ion-input
-        [(ngModel)]="formData.whatsapp"
-        placeholder="Ex: 5511999999999"
-        type="tel">
-      </ion-input>
+      <ion-input [(ngModel)]="formData.nome" placeholder="Nome"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Instagram do Psicólogo</ion-label>
-      <ion-input
-        [(ngModel)]="formData.instagram"
-        placeholder="Ex: drcarlos">
-      </ion-input>
+      <ion-input [(ngModel)]="formData.sobrenome" placeholder="Sobrenome"></ion-input>
     </ion-item>
 
-  </ng-container>
+    <div class="form-row">
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.cpf"
+          (ionInput)="formatarCPF($event)"
+          maxlength="14"
+          placeholder="CPF">
+        </ion-input>
+      </ion-item>
 
-  <ion-button
-    expand="block"
-    (click)="cadastrar()"
-    [disabled]="!isFormValid() || isLoading"
-    class="register-button">
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.dataNascimento"
+          (ionInput)="formatarData($event)"
+          maxlength="10"
+          placeholder="Nascimento">
+        </ion-input>
+      </ion-item>
+    </div>
 
-    <span *ngIf="isLoading">Cadastrando...</span>
-    <span *ngIf="!isLoading">Criar Conta</span>
-  </ion-button>
+    <div class="form-row">
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.telefone"
+          (ionInput)="formatarTelefone($event)"
+          maxlength="15"
+          placeholder="Telefone">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.cep"
+          (ionInput)="formatarCEP($event)"
+          (ionBlur)="buscarCep()"
+          maxlength="9"
+          placeholder="CEP">
+        </ion-input>
+      </ion-item>
+    </div>
+
+    <ion-item>
+      <ion-input [(ngModel)]="formData.email" placeholder="Email" type="email"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="formData.senha" placeholder="Senha" type="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="confirmarSenha" placeholder="Confirmar senha" type="password"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="formData.endereco" placeholder="Endereço"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="formData.complemento" placeholder="Complemento"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-select [(ngModel)]="formData.tipoUsuario" placeholder="Tipo de usuário">
+        <ion-select-option value="paciente">Paciente</ion-select-option>
+        <ion-select-option value="psicologo">Psicólogo</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ng-container *ngIf="formData.tipoUsuario === 'psicologo'">
+
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.whatsapp"
+          placeholder="WhatsApp">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          [(ngModel)]="formData.instagram"
+          placeholder="Instagram">
+        </ion-input>
+      </ion-item>
+
+    </ng-container>
+
+    <ion-button
+      expand="block"
+      (click)="cadastrar()"
+      [disabled]="!isFormValid() || isLoading"
+      class="register-button">
+      {{ isLoading ? 'Cadastrando...' : 'Criar conta' }}
+    </ion-button>
+
+  </div>
 
   <p routerLink="/login" class="login-link">
     Já tem conta? Faça login
+  </p>
+
+  <p class="footer-text">
+    Seus dados são seguros e confidenciais
   </p>
 
 </ion-content>

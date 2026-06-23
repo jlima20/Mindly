@@ -1,33 +1,90 @@
-// src/app/pages/agendamento/agendar-consulta/agendar-consulta.page.scss
 ion-content {
-  --background: #f4f5f8;
+  --background: #f6f8fc;
+}
+
+ion-toolbar {
+  --background: #f6f8fc;
+  --border-width: 0;
+  --color: #3e5f8a;
+}
+
+ion-title {
+  color: #3e5f8a;
+  font-weight: 800;
 }
 
 ion-card {
-  margin: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 86%;
+  max-width: 360px;
+  margin: 52px auto 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 ion-card-title {
-  font-weight: bold;
-  color: var(--ion-color-primary);
+  color: #3e5f8a;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+}
+
+ion-card-content {
+  padding: 20px;
 }
 
 ion-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  margin-bottom: 10px;
+  --background: #d9d9d9;
+  --border-radius: 18px;
+  --border-width: 0;
+  --inner-border-width: 0;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+
+  border-radius: 18px;
+  margin-bottom: 14px;
 }
 
-ion-datetime-button {
-  margin-top: 8px;
+ion-label {
+  color: #3e5f8a !important;
+  font-weight: 700;
+}
+
+ion-input,
+ion-textarea,
+ion-datetime {
+  --color: #222;
+  --placeholder-color: #777;
+}
+
+ion-note {
+  display: block;
+  margin: 12px 0;
+  text-align: center;
+  font-size: 13px;
 }
 
 ion-button {
-  --border-radius: 8px;
-  margin-top: 24px;
-  font-weight: 600;
+  --border-radius: 18px;
+  height: 46px;
+  text-transform: none;
+  font-weight: 800;
+  margin-top: 14px;
+}
+
+ion-button[color="secondary"] {
+  --background: #d9d9d9;
+  --color: #3e5f8a;
+  --border-color: transparent;
+}
+
+ion-button[color="danger"] {
+  --color: #d43d3d;
+}
+
+ion-button:not([fill="outline"]):not([fill="clear"]) {
+  --background: #3e5f8a;
+  --color: #fff;
 }
 
 ion-spinner {

@@ -1,58 +1,110 @@
-
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/perfil-psicologo"></ion-back-button>
     </ion-buttons>
+
     <ion-title>Minha Agenda</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Agendamentos do Dia</ion-card-title>
-    </ion-card-header>
+<ion-content class="agenda-content">
+
+  <section class="hero">
+    <h1>Agenda do dia</h1>
+    <p>Veja, confirme ou cancele as consultas marcadas.</p>
+  </section>
+
+  <ion-card class="date-card">
     <ion-card-content>
-      <ion-item>
-        <ion-label>Selecionar Data</ion-label>
+
+      <ion-item lines="none">
+        <ion-label>
+          <h2>Selecionar data</h2>
+          <p>Escolha o dia que deseja visualizar</p>
+        </ion-label>
+
         <ion-datetime-button datetime="datetime-agenda"></ion-datetime-button>
+
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime id="datetime-agenda" presentation="date" [(ngModel)]="dataSelecionada" (ionChange)="carregarAgendamentosDoDia()"></ion-datetime>
+            <ion-datetime
+              id="datetime-agenda"
+              presentation="date"
+              [(ngModel)]="dataSelecionada"
+              (ionChange)="carregarAgendamentosDoDia()">
+            </ion-datetime>
           </ng-template>
         </ion-modal>
       </ion-item>
 
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="appointments-card">
+    <ion-card-header>
+      <ion-card-title>Consultas</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
       <ion-list *ngIf="agendamentos$ | async as agendamentos; else noAppointments">
+
         <ion-item-sliding *ngFor="let agendamento of agendamentos">
+
           <ion-item>
             <ion-label>
-              <h2>{{ formatarDataHora(agendamento.dataHora) }} - {{ agendamento.pacienteEmail }}</h2>
-              <p>Duração: {{ agendamento.duracaoMinutos }} min</p>
-              <p>Status: <strong>{{ agendamento.status }}</strong></p>
-              <p *ngIf="agendamento.observacoes">Obs: {{ agendamento.observacoes }}</p>
+              <h2>{{ agendamento.pacienteEmail }}</h2>
+
+              <p>
+                <strong>Horário:</strong>
+                {{ formatarDataHora(agendamento.dataHora) }}
+              </p>
+
+              <p>
+                <strong>Duração:</strong>
+                {{ agendamento.duracaoMinutos }} min
+              </p>
+
+              <p>
+                <strong>Status:</strong>
+                {{ agendamento.status }}
+              </p>
+
+              <p *ngIf="agendamento.observacoes">
+                <strong>Obs:</strong>
+                {{ agendamento.observacoes }}
+              </p>
             </ion-label>
           </ion-item>
 
           <ion-item-options side="end">
-            <ion-item-option color="success" (click)="atualizarStatus(agendamento.id!, 'confirmada')">
-              <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
+            <ion-item-option
+              color="success"
+              (click)="atualizarStatus(agendamento.id!, 'confirmada')">
               Confirmar
             </ion-item-option>
-            <ion-item-option color="danger" (click)="atualizarStatus(agendamento.id!, 'cancelada')">
-              <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+
+            <ion-item-option
+              color="danger"
+              (click)="atualizarStatus(agendamento.id!, 'cancelada')">
               Cancelar
             </ion-item-option>
           </ion-item-options>
+
         </ion-item-sliding>
+
       </ion-list>
 
       <ng-template #noAppointments>
-        <ion-item>
-          <ion-label>Nenhum agendamento para a data selecionada.</ion-label>
-        </ion-item>
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <h2>Nenhuma consulta</h2>
+          <p>Nenhum agendamento para a data selecionada.</p>
+        </div>
       </ng-template>
+
     </ion-card-content>
   </ion-card>
+
 </ion-content>

@@ -69,6 +69,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/agendamento/proximas-consultas/proximas-consultas.page')
         .then(m => m.ProximasConsultasPage)
-  }
+  },
+
+  {
+  path: 'agenda-psicologo',
+  loadComponent: () =>
+    import('./pages/agendamento/agenda-psicologo/agenda-psicologo.page')
+      .then(m => m.AgendaPsicologoPage)
+},
 
 ];
