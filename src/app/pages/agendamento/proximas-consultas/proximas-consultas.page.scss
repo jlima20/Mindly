@@ -69,7 +69,19 @@ ion-button {
   --border-radius: 16px;
   text-transform: none;
   font-weight: 700;
-  margin-right: 6px;
+  text-align: center;
+}
+
+ion-button::part(native) {
+  justify-content: center;
+  text-align: center;
+}
+
+.contact-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }
 
 ion-item-option {
@@ -82,4 +94,19 @@ ion-item-option {
 
 ion-spinner {
   color: #3e5f8a;
+}
+
+.empty-state {
+  text-align: center;
+  color: #6b7a90;
+  padding: 20px 8px;
+}
+
+.empty-state p {
+  margin-bottom: 18px;
+}
+
+.empty-state ion-button {
+  --border-color: #3e5f8a;
+  --color: #3e5f8a;
 }

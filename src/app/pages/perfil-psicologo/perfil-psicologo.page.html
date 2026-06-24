@@ -59,7 +59,7 @@
 
       <p *ngIf="user?.telefone">
         <strong>Telefone</strong>
-        <span>{{ user?.telefone }}</span>
+        <span>{{ formatarTelefoneVisual(user?.telefone) }}</span>
       </p>
 
       <p *ngIf="user?.especialidade">
@@ -74,7 +74,7 @@
 
       <p *ngIf="user?.whatsapp">
         <strong>WhatsApp</strong>
-        <span>{{ user?.whatsapp }}</span>
+        <span>{{ formatarTelefoneVisual(user?.whatsapp) }}</span>
       </p>
 
       <p *ngIf="user?.instagram">
@@ -146,6 +146,44 @@
         </ion-textarea>
       </ion-item>
 
+      <ion-button
+        expand="full"
+        fill="outline"
+        (click)="togglePasswordForm()">
+        {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
+      </ion-button>
+
+      <ion-card class="password-compact" *ngIf="showPasswordForm">
+        <ion-card-header>
+          <ion-card-title>Alterar senha</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="stacked">Senha atual</ion-label>
+            <ion-input [(ngModel)]="currentPassword" type="password"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Nova senha</ion-label>
+            <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Confirmar nova senha</ion-label>
+            <ion-input [(ngModel)]="confirmPassword" type="password"></ion-input>
+          </ion-item>
+
+          <ion-button expand="full" [disabled]="isLoadingPassword" (click)="alterarSenha()">
+            {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
+          </ion-button>
+
+          <ion-text color="danger" *ngIf="passwordMessage">
+            <p>{{ passwordMessage }}</p>
+          </ion-text>
+        </ion-card-content>
+      </ion-card>
+
       <ion-button expand="full" [disabled]="isLoadingProfile" (click)="salvarPerfil()">
         {{ isLoadingProfile ? 'Salvando...' : 'Salvar alterações' }}
       </ion-button>
@@ -170,11 +208,7 @@
         {{ mostrarConsultas ? 'Ocultar consultas' : 'Mostrar consultas' }}
       </ion-button>
 
-      <ion-button expand="full" fill="outline" (click)="togglePasswordForm()">
-        {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
-      </ion-button>
-
-      <ion-button expand="full" color="danger" (click)="logout()">
+      <ion-button expand="full" class="logout-button" (click)="logout()">
         Sair
       </ion-button>
     </ion-card-content>
@@ -195,7 +229,7 @@
           <ion-label>
             <h2>{{ paciente.nome }} {{ paciente.sobrenome }}</h2>
             <p>{{ paciente.email }}</p>
-            <p *ngIf="paciente.telefone">{{ paciente.telefone }}</p>
+            <p *ngIf="paciente.telefone">{{ formatarTelefoneVisual(paciente.telefone) }}</p>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -248,37 +282,6 @@
       <ng-template #semConsultas>
         <p class="ion-text-center">Nenhuma consulta marcada ainda.</p>
       </ng-template>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card class="password-compact" *ngIf="showPasswordForm">
-    <ion-card-header>
-      <ion-card-title>Alterar senha</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Senha atual</ion-label>
-        <ion-input [(ngModel)]="currentPassword" type="password"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Nova senha</ion-label>
-        <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Confirmar nova senha</ion-label>
-        <ion-input [(ngModel)]="confirmPassword" type="password"></ion-input>
-      </ion-item>
-
-      <ion-button expand="full" [disabled]="isLoadingPassword" (click)="alterarSenha()">
-        {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
-      </ion-button>
-
-      <ion-text color="danger" *ngIf="passwordMessage">
-        <p>{{ passwordMessage }}</p>
-      </ion-text>
     </ion-card-content>
   </ion-card>
 

@@ -109,6 +109,10 @@ export class ProximasConsultasPage implements OnInit {
     }
   }
 
+  verPsicologos() {
+    this.router.navigate(['/lista-psicologos']);
+  }
+
   abrirWhatsapp(numero: string) {
     if (!numero) {
       return;

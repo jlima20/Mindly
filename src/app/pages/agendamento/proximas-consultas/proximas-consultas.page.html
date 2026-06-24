@@ -43,7 +43,7 @@
 
               <p>
                 <strong>Status:</strong>
-                {{ agendamento.status }}
+                {{ agendamento.status | titlecase }}
               </p>
 
               <p *ngIf="agendamento.observacoes">
@@ -51,7 +51,7 @@
                 {{ agendamento.observacoes }}
               </p>
 
-              <div class="ion-margin-top">
+              <div class="contact-buttons">
 
                 <ion-button
                   *ngIf="agendamento.whatsapp"
@@ -92,13 +92,14 @@
 
       <div
         *ngIf="!isLoading && agendamentos.length === 0"
-        class="ion-text-center ion-padding">
+        class="empty-state">
 
         <p>Você não possui agendamentos futuros.</p>
 
         <ion-button
+          expand="block"
           fill="outline"
-          routerLink="/lista-psicologos">
+          (click)="verPsicologos()">
           Buscar psicólogos
         </ion-button>
 

@@ -18,13 +18,13 @@
 
     <div class="topo">
       <div class="avatar">
-        <img 
-          *ngIf="user.foto" 
-          [src]="user.foto" 
+        <img
+          *ngIf="user.foto"
+          [src]="user.foto"
           alt="Foto do paciente" />
 
-        <div 
-          *ngIf="!user.foto" 
+        <div
+          *ngIf="!user.foto"
           class="avatar-placeholder">
           Sem foto
         </div>
@@ -43,12 +43,12 @@
 
       <p *ngIf="user.telefone">
         <strong>Telefone</strong>
-        <span>{{ user.telefone }}</span>
+        <span>{{ formatarTelefoneVisual(user.telefone) }}</span>
       </p>
 
       <p *ngIf="user.cpf">
         <strong>CPF</strong>
-        <span>{{ user.cpf }}</span>
+        <span>{{ formatarCpfVisual(user.cpf) }}</span>
       </p>
 
       <p *ngIf="user.endereco">
@@ -147,13 +147,67 @@
           </ion-datetime>
         </ion-item>
 
+        <ion-button
+          expand="full"
+          fill="outline"
+          (click)="togglePasswordForm()">
+          {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
+        </ion-button>
+
+        <ion-card class="password-compact" *ngIf="showPasswordForm">
+          <ion-card-header>
+            <ion-card-title>Alterar senha</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-label position="stacked">Senha atual</ion-label>
+              <ion-input
+                [(ngModel)]="currentPassword"
+                type="password"
+                placeholder="Senha atual">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Nova senha</ion-label>
+              <ion-input
+                [(ngModel)]="newPassword"
+                type="password"
+                placeholder="Nova senha">
+              </ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="stacked">Confirmar nova senha</ion-label>
+              <ion-input
+                [(ngModel)]="confirmPassword"
+                type="password"
+                placeholder="Confirmar nova senha">
+              </ion-input>
+            </ion-item>
+
+            <ion-button
+              size="small"
+              expand="full"
+              [disabled]="isLoadingPassword"
+              (click)="alterarSenha()">
+              {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
+            </ion-button>
+
+            <ion-text color="danger" *ngIf="passwordMessage">
+              <p>{{ passwordMessage }}</p>
+            </ion-text>
+          </ion-card-content>
+        </ion-card>
+
         <ion-button expand="full" [disabled]="isLoadingProfile" (click)="salvarPerfil()">
           {{ isLoadingProfile ? 'Salvando...' : 'Salvar perfil' }}
         </ion-button>
       </ion-card-content>
     </ion-card>
   </ng-container>
-  
+
   <ion-card class="action-card">
     <ion-card-header>
       <ion-card-title>Ações</ion-card-title>
@@ -170,7 +224,7 @@
         Meus agendamentos
       </ion-button>
 
-      <ion-button expand="full" color="medium" (click)="logout()">
+      <ion-button expand="full" class="logout-button" (click)="logout()">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
         Sair
       </ion-button>
@@ -228,41 +282,14 @@
       </ion-list>
 
       <ng-template #semAgendamentos>
-        <div class="ion-text-center ion-padding">
-          Você não possui agendamentos futuros.
+        <div class="empty-agendamentos">
+          <p>Você não possui agendamentos futuros.</p>
+
+          <ion-button expand="block" (click)="verPsicologos()">
+            Buscar psicólogos
+          </ion-button>
         </div>
       </ng-template>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-button size="small" expand="full" fill="outline" (click)="togglePasswordForm()">
-    {{ showPasswordForm ? 'Ocultar alteração de senha' : 'Alterar senha' }}
-  </ion-button>
-
-  <ion-card class="password-compact" *ngIf="showPasswordForm">
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="stacked">Senha atual</ion-label>
-        <ion-input [(ngModel)]="currentPassword" type="password" placeholder="Senha atual"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Nova senha</ion-label>
-        <ion-input [(ngModel)]="newPassword" type="password" placeholder="Nova senha"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="stacked">Confirmar nova senha</ion-label>
-        <ion-input [(ngModel)]="confirmPassword" type="password" placeholder="Confirmar nova senha"></ion-input>
-      </ion-item>
-
-      <ion-button size="small" expand="full" [disabled]="isLoadingPassword" (click)="alterarSenha()">
-        {{ isLoadingPassword ? 'Alterando...' : 'Alterar senha' }}
-      </ion-button>
-
-      <ion-text color="danger" *ngIf="passwordMessage">
-        <p>{{ passwordMessage }}</p>
-      </ion-text>
     </ion-card-content>
   </ion-card>
 

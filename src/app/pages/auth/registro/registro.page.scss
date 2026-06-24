@@ -2,6 +2,20 @@
   --background: #f6f8fc;
 }
 
+.home-button {
+  position: absolute;
+  top: 24px;
+  left: 16px;
+
+  --color: #3e5f8a;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: none;
+}
+
 h2 {
   text-align: center;
   color: #3e5f8a;
@@ -45,6 +59,17 @@ ion-select {
   gap: 12px;
 }
 
+ion-button {
+  text-transform: none;
+  font-weight: 700;
+  text-align: center;
+}
+
+ion-button::part(native) {
+  justify-content: center;
+  text-align: center;
+}
+
 .register-button {
   width: 110px;
   height: 34px;
@@ -53,9 +78,6 @@ ion-select {
   --background: #d9d9d9;
   --color: #3e5f8a;
   --border-radius: 10px;
-
-  font-weight: 700;
-  text-transform: none;
 }
 
 .login-link {

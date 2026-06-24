@@ -9,7 +9,6 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService, User } from '../../services/auth.service';
 import { AgendamentoService } from '../../services/agendamento.service';
 
-
 @Component({
   selector: 'app-perfil-paciente',
   templateUrl: './perfil-paciente.page.html',
@@ -23,9 +22,7 @@ import { AgendamentoService } from '../../services/agendamento.service';
 })
 export class PerfilPacientePage implements OnInit {
 
-
   user: User | any = {
-
     nome: '',
     sobrenome: '',
     cpf: '',
@@ -38,982 +35,326 @@ export class PerfilPacientePage implements OnInit {
     complemento: '',
     tipoUsuario: 'paciente',
     foto: ''
-
   };
 
-
+  showPasswordForm = false;
   currentPassword = '';
   newPassword = '';
   confirmPassword = '';
 
-
   newPhotoTemp: string | null = null;
-
 
   profileMessage = '';
   passwordMessage = '';
 
-
   isLoadingProfile = false;
   isLoadingPassword = false;
 
-
-  showPasswordForm = false;
   editMode = false;
   showDatepicker = false;
 
-
   proximosAgendamentos: any[] = [];
 
-
-
-
   constructor(
-
     private authService: AuthService,
-
     private agendamentoService: AgendamentoService,
-
     private router: Router,
-
     private toastCtrl: ToastController
-
   ) {}
 
-
-
-
-
-  ngOnInit(){
-
+  ngOnInit() {
     this.carregarUsuario();
-
     this.carregarProximosAgendamentos();
-
   }
 
+  carregarUsuario() {
+    const currentUser = this.authService.getCurrentUser();
 
-
-
-
-
-  carregarUsuario(){
-
-
-    const currentUser =
-    this.authService.getCurrentUser();
-
-
-
-    if(!currentUser || !currentUser.email){
-
+    if (!currentUser || !currentUser.email) {
       this.router.navigate(['/login']);
-
       return;
-
     }
-
-
-
-
 
     this.authService
-    .getUserByEmail(currentUser.email)
-    .subscribe(user => {
+      .getUserByEmail(currentUser.email)
+      .subscribe(user => {
+        if (user) {
+          this.user = {
+            ...currentUser,
+            ...user
+          };
 
-
-
-      if(user){
-
-
-        this.user = {
-
-          ...currentUser,
-
-          ...user
-
-        };
-
-
-
-        this.user.dataNascimentoIso =
-
-        this.user.dataNascimento
-
-        ? this.toIsoDate(this.user.dataNascimento)
-
-        : '';
-
-      }
-
-
-
-    });
-
-
+          this.user.dataNascimentoIso = this.user.dataNascimento
+            ? this.toIsoDate(this.user.dataNascimento)
+            : '';
+        }
+      });
   }
 
+  async carregarProximosAgendamentos() {
+    const currentUser = this.authService.getCurrentUser();
 
-
-
-
-
-  async carregarProximosAgendamentos(){
-
-
-    const currentUser =
-    this.authService.getCurrentUser();
-
-
-
-    if(!currentUser?.email){
-
+    if (!currentUser?.email) {
       return;
-
     }
-
-
-
-
 
     this.agendamentoService
-    .getProximosAgendamentos(
-      currentUser.email,
-      'paciente'
-    )
-    .subscribe(async agendamentos => {
+      .getProximosAgendamentos(currentUser.email, 'paciente')
+      .subscribe(async agendamentos => {
+        const listaAtualizada: any[] = [];
 
+        for (const agendamento of agendamentos) {
+          const psicologo = await firstValueFrom(
+            this.authService.getUserByEmail(agendamento.psicologoEmail)
+          );
 
+          listaAtualizada.push({
+            ...agendamento,
 
-      const listaAtualizada:any[] = [];
+            psicologoNome: psicologo
+              ? `${psicologo.nome} ${psicologo.sobrenome}`
+              : 'Psicólogo',
 
+            psicologoFoto: psicologo?.foto || 'assets/avatar.png',
+            whatsapp: psicologo?.whatsapp || '',
+            instagram: psicologo?.instagram || ''
+          });
+        }
 
-
-
-      for(const agendamento of agendamentos){
-
-
-
-        const psicologo =
-
-        await firstValueFrom(
-
-          this.authService.getUserByEmail(
-            agendamento.psicologoEmail
-          )
-
-        );
-
-
-
-
-        listaAtualizada.push({
-
-          ...agendamento,
-
-
-          psicologoNome:
-
-          psicologo
-
-          ? `${psicologo.nome} ${psicologo.sobrenome}`
-
-          : 'Psicólogo',
-
-
-
-          psicologoFoto:
-
-          psicologo?.foto
-
-          || 'assets/avatar.png',
-
-
-
-          whatsapp:
-
-          psicologo?.whatsapp
-
-          || '',
-
-
-
-          instagram:
-
-          psicologo?.instagram
-
-          || ''
-
-        });
-
-
-
-      }
-
-
-
-
-      this.proximosAgendamentos =
-      listaAtualizada;
-
-
-
-    });
-
-
+        this.proximosAgendamentos = listaAtualizada;
+      });
   }
-    async salvarPerfil(){
 
-
+  async salvarPerfil() {
     this.isLoadingProfile = true;
-
     this.profileMessage = '';
 
-
-
-    if(this.user.dataNascimentoIso){
-
-
-      this.user.dataNascimento =
-
-      this.fromIsoDate(
-
-        this.user.dataNascimentoIso
-
-      );
-
-
+    if (this.user.dataNascimentoIso) {
+      this.user.dataNascimento = this.fromIsoDate(this.user.dataNascimentoIso);
     }
 
+    try {
+      await this.authService.updateUser(this.user);
 
-
-
-    try{
-
-
-      await this.authService.updateUser(
-
-        this.user
-
-      );
-
-
-
-      this.profileMessage =
-
-      'Perfil atualizado com sucesso.';
-
-
-
+      this.profileMessage = 'Perfil atualizado com sucesso.';
       this.editMode = false;
-
       this.showDatepicker = false;
+      this.showPasswordForm = false;
 
+      await this.showToast(this.profileMessage);
 
-
-      await this.showToast(
-
-        this.profileMessage
-
-      );
-
-
-
-    }catch(error){
-
-
-      console.error(
-
-        'Erro ao atualizar perfil:',
-
-        error
-
-      );
-
-
-      this.profileMessage =
-
-      'Não foi possível atualizar o perfil.';
-
-
-
-    }finally{
-
-
+    } catch (error) {
+      console.error('Erro ao atualizar perfil:', error);
+      this.profileMessage = 'Não foi possível atualizar o perfil.';
+    } finally {
       this.isLoadingProfile = false;
-
-
     }
-
-
   }
 
+  async onFotoSelecionada(event: any) {
+    const file = event.target.files?.[0];
 
-
-
-
-
-
-  async onFotoSelecionada(event:any){
-
-
-
-    const file =
-
-    event.target.files?.[0];
-
-
-
-    if(!file){
-
+    if (!file) {
       return;
-
     }
 
+    const reader = new FileReader();
 
-
-
-    const reader =
-
-    new FileReader();
-
-
-
-
-    reader.onload = ()=>{
-
-
-      this.newPhotoTemp =
-
-      reader.result as string;
-
-
-
+    reader.onload = () => {
+      this.newPhotoTemp = reader.result as string;
     };
 
-
-
-
     reader.readAsDataURL(file);
-
-
-
   }
 
-
-
-
-
-
-
-
-  async capturePhoto(){
-
-
-
-    try{
-
-
-
-      const image =
-
-      await Camera.getPhoto({
-
-
-
-        quality:80,
-
-
-        allowEditing:false,
-
-
-        resultType:
-
-        CameraResultType.DataUrl,
-
-
-        source:
-
-        CameraSource.Camera
-
-
-
+  async capturePhoto() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera
       });
 
+      this.newPhotoTemp = image.dataUrl || '';
 
-
-
-      this.newPhotoTemp =
-
-      image.dataUrl || '';
-
-
-
-    }catch(error){
-
-
-      console.error(
-
-        'Erro ao capturar foto:',
-
-        error
-
-      );
-
-
+    } catch (error) {
+      console.error('Erro ao capturar foto:', error);
     }
-
-
   }
 
-
-
-
-
-
-
-
-  async pickPhotoFromGallery(){
-
-
-
-    try{
-
-
-
-      const image =
-
-      await Camera.getPhoto({
-
-
-
-        quality:80,
-
-
-        allowEditing:false,
-
-
-        resultType:
-
-        CameraResultType.DataUrl,
-
-
-        source:
-
-        CameraSource.Photos
-
-
-
+  async pickPhotoFromGallery() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 80,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Photos
       });
 
+      this.newPhotoTemp = image.dataUrl || '';
 
-
-
-      this.newPhotoTemp =
-
-      image.dataUrl || '';
-
-
-
-
-    }catch(error){
-
-
-      console.error(
-
-        'Erro ao selecionar foto:',
-
-        error
-
-      );
-
-
+    } catch (error) {
+      console.error('Erro ao selecionar foto:', error);
     }
-
-
   }
 
-
-
-
-
-
-
-
-  async confirmarFoto(){
-
-
-
-    if(!this.newPhotoTemp){
-
+  async confirmarFoto() {
+    if (!this.newPhotoTemp) {
       return;
-
     }
 
+    this.user.foto = this.newPhotoTemp;
 
-
-
-    this.user.foto =
-
-    this.newPhotoTemp;
-
-
-
-
-    try{
-
-
-
-      await this.authService.updateUser(
-
-        this.user
-
-      );
-
-
-
-
+    try {
+      await this.authService.updateUser(this.user);
       this.newPhotoTemp = null;
-
-
-
-
-      await this.showToast(
-
-        'Foto atualizada com sucesso.'
-
-      );
-
-
-
-
-    }catch(error){
-
-
-
-      console.error(
-
-        'Erro ao salvar foto:',
-
-        error
-
-      );
-
-
+      await this.showToast('Foto atualizada com sucesso.');
+    } catch (error) {
+      console.error('Erro ao salvar foto:', error);
     }
-
-
-
   }
 
-
-
-
-
-
-
-
-  cancelarNovaFoto(){
-
-
+  cancelarNovaFoto() {
     this.newPhotoTemp = null;
-
-
   }
 
-
-
-
-
-
-
-
-  logout(){
-
-
+  logout() {
     this.authService.logout();
-
-
-    this.router.navigate([
-
-      '/login'
-
-    ]);
-
-
+    this.router.navigate(['/login']);
   }
 
-
-
-
-
-
-
-
-  togglePasswordForm(){
-
-
-    this.showPasswordForm =
-
-    !this.showPasswordForm;
-
-
+  togglePasswordForm() {
+    this.showPasswordForm = !this.showPasswordForm;
   }
 
-
-
-
-
-
-
-
-  async alterarSenha(){
-
-
-
+  async alterarSenha() {
     this.isLoadingPassword = true;
-
-
     this.passwordMessage = '';
 
-
-
-
-    if(this.newPassword !== this.confirmPassword){
-
-
-
-      this.passwordMessage =
-
-      'A nova senha e confirmação precisam ser iguais.';
-
-
-
+    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
+      this.passwordMessage = 'Preencha todos os campos da senha.';
       this.isLoadingPassword = false;
-
-
       return;
-
-
     }
 
+    if (this.newPassword !== this.confirmPassword) {
+      this.passwordMessage = 'A nova senha e confirmação precisam ser iguais.';
+      this.isLoadingPassword = false;
+      return;
+    }
 
-
-
-
-
-    try{
-
-
-
-      const success =
-
-      await this.authService.changePassword(
-
-
+    try {
+      const success = await this.authService.changePassword(
         this.user.email,
-
-
         this.currentPassword,
-
-
         this.newPassword
-
-
       );
 
-
-
-
-
-      if(success){
-
-
-
-        this.passwordMessage =
-
-        'Senha alterada com sucesso.';
-
-
-
+      if (success) {
+        this.passwordMessage = 'Senha alterada com sucesso.';
         this.currentPassword = '';
-
         this.newPassword = '';
-
         this.confirmPassword = '';
 
-
-
-        await this.showToast(
-
-          this.passwordMessage
-
-        );
-
-
-
-      }else{
-
-
-
-        this.passwordMessage =
-
-        'Senha atual incorreta.';
-
-
-
+        await this.showToast(this.passwordMessage);
+      } else {
+        this.passwordMessage = 'Senha atual incorreta.';
       }
 
-
-
-
-    }catch(error){
-
-
-
-      console.error(
-
-        'Erro ao alterar senha:',
-
-        error
-
-      );
-
-
-
-      this.passwordMessage =
-
-      'Não foi possível alterar a senha.';
-
-
-
-    }finally{
-
-
-
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      this.passwordMessage = 'Não foi possível alterar a senha.';
+    } finally {
       this.isLoadingPassword = false;
-
-
-
     }
-
-
-
   }
-    toggleEditMode(){
 
+  toggleEditMode() {
+    this.editMode = !this.editMode;
 
-    this.editMode =
-
-    !this.editMode;
-
-
-
-    if(!this.editMode){
-
+    if (!this.editMode) {
       this.showDatepicker = false;
-
+      this.showPasswordForm = false;
+      this.passwordMessage = '';
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
     }
-
-
   }
 
-
-
-
-
-
-
-  verPsicologos(){
-
-
-    this.router.navigate([
-
-      '/lista-psicologos'
-
-    ]);
-
-
+  verPsicologos() {
+    this.router.navigate(['/lista-psicologos']);
   }
 
-
-
-
-
-
-
-  verAgendamentos(){
-
-
-    this.router.navigate([
-
-      '/proximas-consultas'
-
-    ]);
-
-
+  verAgendamentos() {
+    this.router.navigate(['/proximas-consultas']);
   }
 
-
-
-
-
-
-
-  abrirWhatsapp(numero:string){
-
-
-
-    if(!numero){
-
+  abrirWhatsapp(numero: string) {
+    if (!numero) {
       return;
-
     }
 
-
-
-    const link =
-
-    `https://wa.me/${numero.replace(/\D/g,'')}`;
-
-
-
-    window.open(
-
-      link,
-
-      '_blank'
-
-    );
-
-
+    const numeroLimpo = numero.replace(/\D/g, '');
+    window.open(`https://wa.me/${numeroLimpo}`, '_blank');
   }
 
-
-
-
-
-
-
-  abrirInstagram(usuario:string){
-
-
-
-    if(!usuario){
-
+  abrirInstagram(usuario: string) {
+    if (!usuario) {
       return;
-
     }
 
-
-
-    const link =
-
-    `https://instagram.com/${usuario.replace('@','')}`;
-
-
-
-    window.open(
-
-      link,
-
-      '_blank'
-
-    );
-
-
+    const link = `https://instagram.com/${usuario.replace('@', '')}`;
+    window.open(link, '_blank');
   }
 
+  formatarCpfVisual(cpf: string): string {
+    const valor = cpf.replace(/\D/g, '');
 
+    if (valor.length !== 11) {
+      return cpf;
+    }
 
+    return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
 
+  formatarTelefoneVisual(telefone: string): string {
+    const valor = telefone.replace(/\D/g, '');
 
+    if (valor.length === 11) {
+      return valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
 
+    if (valor.length === 10) {
+      return valor.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
 
-  toIsoDate(date:string):string{
+    return telefone;
+  }
 
+  toIsoDate(date: string): string {
+    const [day, month, year] = date.split('/').map(Number);
 
-
-    const [day, month, year] =
-
-    date.split('/').map(Number);
-
-
-
-
-    if(!day || !month || !year){
-
+    if (!day || !month || !year) {
       return '';
-
     }
 
-
-
-
-    return `${year.toString().padStart(4,'0')}-${month.toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
-
-
-
+    return `${year.toString().padStart(4, '0')}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
   }
 
-
-
-
-
-
-
-  fromIsoDate(date:string):string{
-
-
-
-    const [year, month, day] =
-
-    date.split('-');
-
-
-
-
+  fromIsoDate(date: string): string {
+    const [year, month, day] = date.split('-');
     return `${day}/${month}/${year}`;
-
-
-
   }
 
-
-
-
-
-
-
-  async showToast(message:string){
-
-
-
-    const toast =
-
-    await this.toastCtrl.create({
-
-
-
+  async showToast(message: string) {
+    const toast = await this.toastCtrl.create({
       message,
-
-
-      duration:2500,
-
-
-      position:'bottom'
-
-
-
+      duration: 2500,
+      position: 'bottom'
     });
 
-
-
-    toast.present();
-
-
-
+    await toast.present();
   }
-
-
 }

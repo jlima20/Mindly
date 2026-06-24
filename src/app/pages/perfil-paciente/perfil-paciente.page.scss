@@ -179,6 +179,18 @@ ion-input {
   --placeholder-color: #777;
 }
 
+ion-button {
+  text-transform: none;
+  font-weight: 700;
+  --border-radius: 14px;
+  text-align: center;
+}
+
+ion-button::part(native) {
+  justify-content: center;
+  text-align: center;
+}
+
 .action-card {
   background: transparent !important;
   box-shadow: none !important;
@@ -191,8 +203,6 @@ ion-input {
 .action-card ion-button {
   --border-radius: 18px;
   height: 48px;
-  text-transform: none;
-  font-weight: 700;
   margin-bottom: 12px;
 }
 
@@ -207,7 +217,7 @@ ion-input {
   --color: #3e5f8a;
 }
 
-.action-card ion-button:last-child {
+.action-card .logout-button {
   --background: #3e5f8a;
   --color: #fff;
 }
@@ -231,12 +241,34 @@ ion-label p {
   color: #333;
 }
 
-.password-compact ion-button,
-ion-card ion-button {
-  --border-radius: 14px;
-  text-transform: none;
+.password-compact {
+  width: 100% !important;
+  margin: 18px auto !important;
+  background: transparent !important;
+}
+
+.password-compact ion-card-title {
+  font-size: 18px;
+}
+
+.password-compact ion-card-content {
+  padding: 0;
 }
 
 ion-text p {
   text-align: center;
+}
+
+.empty-agendamentos {
+  text-align: center;
+  color: #333;
+}
+
+.empty-agendamentos p {
+  margin-bottom: 16px;
+}
+
+.empty-agendamentos ion-button {
+  --background: #d9d9d9;
+  --color: #3e5f8a;
 }

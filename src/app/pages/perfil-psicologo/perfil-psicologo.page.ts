@@ -127,6 +127,10 @@ export class PerfilPsicologoPage implements OnInit {
     this.mostrarConsultas = !this.mostrarConsultas;
   }
 
+  togglePasswordForm() {
+    this.showPasswordForm = !this.showPasswordForm;
+  }
+
   async salvarPerfil() {
     this.isLoadingProfile = true;
 
@@ -135,6 +139,7 @@ export class PerfilPsicologoPage implements OnInit {
 
       this.profileMessage = 'Perfil atualizado com sucesso.';
       this.editMode = false;
+      this.showPasswordForm = false;
 
       await this.showToast(this.profileMessage);
 
@@ -218,6 +223,14 @@ export class PerfilPsicologoPage implements OnInit {
 
   toggleEditMode() {
     this.editMode = !this.editMode;
+
+    if (!this.editMode) {
+      this.showPasswordForm = false;
+      this.passwordMessage = '';
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
+    }
   }
 
   carregarPacientes() {
@@ -251,13 +264,15 @@ export class PerfilPsicologoPage implements OnInit {
       });
   }
 
-  togglePasswordForm() {
-    this.showPasswordForm = !this.showPasswordForm;
-  }
-
   async alterarSenha() {
     this.isLoadingPassword = true;
     this.passwordMessage = '';
+
+    if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
+      this.passwordMessage = 'Preencha todos os campos da senha.';
+      this.isLoadingPassword = false;
+      return;
+    }
 
     if (this.newPassword !== this.confirmPassword) {
       this.passwordMessage = 'As senhas não coincidem.';
@@ -277,6 +292,8 @@ export class PerfilPsicologoPage implements OnInit {
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';
+
+        await this.showToast(this.passwordMessage);
       } else {
         this.passwordMessage = 'Senha atual incorreta.';
       }
@@ -287,6 +304,24 @@ export class PerfilPsicologoPage implements OnInit {
     } finally {
       this.isLoadingPassword = false;
     }
+  }
+
+  formatarTelefoneVisual(telefone: string): string {
+    const valor = telefone.replace(/\D/g, '');
+
+    if (valor.length === 13 && valor.startsWith('55')) {
+      return valor.replace(/55(\d{2})(\d{5})(\d{4})/, '+55 ($1) $2-$3');
+    }
+
+    if (valor.length === 11) {
+      return valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    }
+
+    if (valor.length === 10) {
+      return valor.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+
+    return telefone;
   }
 
   logout() {
